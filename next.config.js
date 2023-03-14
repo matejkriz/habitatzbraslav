@@ -9,7 +9,7 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ["assets.tina.io"],
+    domains: ["assets.tina.io", "res.cloudinary.com"],
   },
   i18n: {
     locales: ["cs"],

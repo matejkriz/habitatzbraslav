@@ -1,11 +1,10 @@
-import { defineConfig } from "tinacms";
+import { defineConfig, TinaCloudMediaStoreClass } from "tinacms";
 import { contentBlockSchema } from "../components/blocks/content";
 import { featureBlockSchema } from "../components/blocks/features";
 import { heroBlockSchema } from "../components/blocks/hero";
 import { testimonialBlockSchema } from "../components/blocks/testimonial";
 import { introBlockSchema } from "../components/blocks/intro";
 import { ColorPickerInput } from "../components/fields/color";
-import { iconSchema } from "../components/util/icon";
 
 const config = defineConfig({
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
@@ -15,15 +14,10 @@ const config = defineConfig({
     process.env.HEAD!, // Netlify branch env
   token: process.env.TINA_TOKEN!,
   media: {
-    // If you wanted cloudinary do this
-    // loadCustomStore: async () => {
-    //   const pack = await import("next-tinacms-cloudinary");
-    //   return pack.TinaCloudCloudinaryMediaStore;
-    // },
-    // this is the config for the tina cloud media store
-    tina: {
-      publicFolder: "public",
-      mediaRoot: "uploads",
+    // @ts-expect-error wrong typing in TinaCMS
+    loadCustomStore: async () => {
+      const pack = await import("next-tinacms-cloudinary");
+      return pack.TinaCloudCloudinaryMediaStore;
     },
   },
   build: {
