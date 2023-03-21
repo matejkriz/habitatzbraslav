@@ -74,6 +74,7 @@ export const contentBlockSchema: TinaTemplate = {
               label: "Primary Color",
               name: "color",
               ui: {
+                // @ts-expect-error - wrong tina typing
                 component: CustomColorPickerInput,
               },
             },

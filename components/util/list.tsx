@@ -10,8 +10,6 @@ const customColor: Record<(typeof colorOptions)[number], string> = {
 };
 
 export const List = (props) => {
-  console.log(props);
-
   return (
     <div className={`${customColor[props?.color ?? "yellow"]}`}>
       <TinaMarkdown content={props?.children} />
