@@ -161,7 +161,7 @@ export const Header = ({ data }) => {
                                   <Link
                                     href={`${prefix}/${item.href}`}
                                     passHref
-                                    className={`relative inline-block select-none	whitespace-nowrap py-4 px-2 text-sm tracking-wide transition duration-150 ease-out hover:opacity-100 md:py-6 md:px-4 md:text-base ${
+                                    className={`font-medium relative inline-block select-none	whitespace-nowrap py-4 px-2 text-sm tracking-wide transition duration-150 ease-out hover:opacity-100 md:py-6 md:px-4 md:text-lg ${
                                       activeItem ? `` : `opacity-70`
                                     }`}
                                     aria-current={
@@ -243,7 +243,7 @@ export const Header = ({ data }) => {
                               <Link
                                 href={`${prefix}/${item.href}`}
                                 passHref
-                                className={`relative inline-block w-full select-none whitespace-nowrap py-4	px-2 text-center text-sm tracking-wide transition duration-150 ease-out hover:opacity-100  focus:bg-yellow-500 focus:bg-opacity-50 active:bg-yellow-500 active:bg-opacity-70 md:py-6 md:px-4 md:text-base ${
+                                className={`relative inline-block w-full select-none whitespace-nowrap py-4	px-2 text-center font-medium text-lg tracking-wide transition duration-150 ease-out hover:opacity-100  focus:bg-yellow-500 focus:bg-opacity-50 active:bg-yellow-500 active:bg-opacity-70 md:py-6 md:px-4 md:text-base ${
                                   activeItem ? `` : `opacity-70`
                                 }`}
                                 tabIndex={0}

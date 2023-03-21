@@ -6,7 +6,6 @@ import { Analytics } from "@vercel/analytics/react";
 const truculenta = localFont({
   src: "../public/fonts/truculenta.ttf",
   variable: "--font-truculenta",
-  declarations: [{ prop: "size-adjust", value: "120%" }],
 });
 
 const montserrat = Montserrat({
