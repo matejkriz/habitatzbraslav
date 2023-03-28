@@ -11,6 +11,16 @@ export const Layout = ({ rawData = {}, data = layoutData, children }) => {
       <Head>
         <title>Habitat</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta name="description" content="Habitat Zbraslav - Dětská vzdělávací skupina" key="desc" />
+        <meta property="og:title" content="Habitat Zbraslav - Dětská vzdělávací skupina" />
+        <meta
+          property="og:description"
+          content="Jsme skupina rodičů, která se potkala v lesní školce v Praze na Zbraslavi. Spojuje nás snaha najít vlídné prostředí pro naše vlastní děti, kde budou mít možnost pokračovat přirozeně v procesu poznávání světa."
+        />
+        <meta
+          property="og:image"
+          content="/images/habitat.png"
+        />
         {data.theme.font === "nunito" && (
           <>
             <link rel="preconnect" href="https://fonts.googleapis.com" />
