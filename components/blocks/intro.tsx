@@ -1,6 +1,7 @@
 import React from "react";
 import { Section } from "../util/section";
 import type { TinaTemplate } from "tinacms";
+import Link from "next/link";
 import Image from "next/image";
 import background from "../../public/images/background.webp";
 import backgroundWide from "../../public/images/background-wide.webp";
@@ -28,7 +29,23 @@ export const Intro = ({ data }) => {
         src="/images/habitat-zbraslav.svg"
         width={374}
         height={136}
+        priority
       />
+      <div className="bg-orange-300 w-full opacity-90 absolute top-0">
+        <div className="max-w-screen-xl mx-auto px-4 py-3 text-white sm:text-center md:px-8">
+        <Link
+              href="/schuzka"
+              className="duration-150 hover:text-green-800"
+            >
+          <p className="text-lg">
+            Zveme vás na setkání, které proběhne ve <span className="font-bold">čtvrtek 13. 4. od 17:30</span>!{' '}
+            <span
+              className="font-semibold underline inline-flex items-center gap-x-1"
+            >Dozvědět se více 🕠📍 </span>
+          </p>
+          </Link>
+        </div>
+      </div>
     </Section>
   );
 };
