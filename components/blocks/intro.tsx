@@ -37,11 +37,11 @@ export const Intro = ({ data }) => {
               href="/schuzka"
               className="duration-150 hover:text-green-800"
             >
-          <p className="text-lg">
-            Zveme vás na setkání, které proběhne ve <span className="font-bold">čtvrtek 13. 4. od 17:30</span>!{' '}
+          <p className="text-md md:text-lg">
+            Zveme vás na&nbsp;setkání, které proběhne ve&nbsp;<span className="font-bold">čtvrtek 13.&nbsp;4. od&nbsp;17:30</span>!{' '}
             <span
               className="font-semibold underline inline-flex items-center gap-x-1"
-            >Dozvědět se více 🕠📍 </span>
+            >👉 Dozvědět se&nbsp;více</span>
           </p>
           </Link>
         </div>
