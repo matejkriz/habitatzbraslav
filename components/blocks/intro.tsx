@@ -9,22 +9,6 @@ import backgroundWide from "../../public/images/background-wide.webp";
 export const Intro = ({ data }) => {
   return (
     <Section color={data.color} className="relative w-full">
-      <div className="bg-orange-300 w-full opacity-90 relative">
-        <div className="max-w-screen-xl mx-auto px-4 py-3 text-white text-center md:px-8">
-          <Link href="/schuzka" className="duration-150 hover:text-green-800">
-            <p className="text-md md:text-lg">
-              Zveme vás na&nbsp;setkání, které proběhne ve&nbsp;
-              <span className="font-bold">
-                čtvrtek 13.&nbsp;4. od&nbsp;17:30
-              </span>
-              ! 👉{" "}
-              <span className="font-semibold underline inline-flex items-center gap-x-1">
-                Dozvědět se&nbsp;více
-              </span>
-            </p>
-          </Link>
-        </div>
-      </div>
       <div className="relative">
         <Image
           className={`relative max-h-[65vh] w-full lg:hidden`}
