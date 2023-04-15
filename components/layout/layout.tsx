@@ -1,5 +1,6 @@
 import React from "react";
 import Head from "next/head";
+import Script from 'next/script'
 import { Header } from "./header";
 import { Footer } from "./footer";
 import layoutData from "../../content/global/index.json";
@@ -42,6 +43,19 @@ export const Layout = ({ rawData = {}, data = layoutData, children }) => {
           </>
         )}
       </Head>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-FM9PMWJFPE"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-FM9PMWJFPE');
+        `}
+      </Script>
       <Theme data={data?.theme}>
         <div className={`flex min-h-screen flex-col font-${data.theme.font}`}>
           <Header data={data?.header} />
