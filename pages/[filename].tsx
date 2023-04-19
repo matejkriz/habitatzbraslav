@@ -13,7 +13,7 @@ export default function HomePage(
   });
   return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <Layout rawData={data} data={data.global as any}>
+    <Layout data={data.global as any}>
       <Blocks {...data.page} />
     </Layout>
   );

@@ -6,7 +6,7 @@ import { Footer } from "./footer";
 import layoutData from "../../content/global/index.json";
 import { Theme } from "./theme";
 
-export const Layout = ({ rawData = {}, data = layoutData, children }) => {
+export const Layout = ({  data = layoutData, children }) => {
   return (
     <>
       <Head>
@@ -65,7 +65,6 @@ export const Layout = ({ rawData = {}, data = layoutData, children }) => {
             {children}
           </div>
           <Footer
-            rawData={rawData}
             data={data?.footer}
             logo={data?.header.logo}
           />
