@@ -1,7 +1,6 @@
 import React from "react";
 import { Section } from "../util/section";
 import type { TinaTemplate } from "tinacms";
-import Link from "next/link";
 import Image from "next/image";
 import background from "../../public/images/background.webp";
 import backgroundWide from "../../public/images/background-wide.webp";

@@ -3,11 +3,10 @@ import Link from "next/link";
 import { FaFacebookF, FaGithub, FaTwitter } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
 import { Container } from "../../util/container";
-import { RawRenderer } from "./rawRenderer";
 import { useTheme } from "..";
 import Image from "next/image";
 
-export const Footer = ({ data, logo, rawData }) => {
+export const Footer = ({ data, logo }) => {
   const theme = useTheme();
   const socialIconClasses = "h-7 w-auto";
   const socialIconColorClasses = {
