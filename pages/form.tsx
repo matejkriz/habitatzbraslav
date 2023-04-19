@@ -16,6 +16,7 @@ export default function HomePage(
   return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <Layout data={data.global as any}>
+      <Blocks {...data.page} />
       <Section>
         <Container className={`prose prose-lg overflow-y-auto`} size="medium" width="custom">
           <iframe
@@ -28,7 +29,6 @@ export default function HomePage(
           </iframe>
         </Container>
       </Section>
-      <Blocks {...data.page} />
     </Layout>
   );
 }
