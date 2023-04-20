@@ -1,6 +1,7 @@
 import React from "react";
 import { Container } from "../util/container";
 import { Section } from "../util/section";
+import { Button } from "../util/button";
 import { Title } from "../util/title";
 import { List } from "../util/list";
 import { CustomColorPickerInput } from "../fields/customColor";
@@ -16,7 +17,7 @@ export const Content = ({ data, parentField = "" }) => {
         size="medium"
         width="custom"
       >
-        <TinaMarkdown content={data.body} components={{ Title, List }} />
+        <TinaMarkdown content={data.body} components={{ Title, List, Button }} />
       </Container>
     </Section>
   );
@@ -82,6 +83,31 @@ export const contentBlockSchema: TinaTemplate = {
               name: "children",
               label: "Seznam",
               type: "rich-text",
+            },
+          ],
+        },
+        {
+          name: "Button",
+          label: "Tlačítko",
+          fields: [
+            {
+              type: "string",
+              label: "Primary Color",
+              name: "color",
+              ui: {
+                // @ts-expect-error - wrong tina typing
+                component: CustomColorPickerInput,
+              },
+            },
+            {
+              name: "link",
+              label: "Odkaz",
+              type: "string",
+            },
+            {
+              name: "label",
+              label: "Label",
+              type: "string",
             },
           ],
         },
