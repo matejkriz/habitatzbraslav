@@ -94,7 +94,7 @@ export const Header = ({ data }) => {
               className="flex items-center gap-1 whitespace-nowrap tracking-[.002em]"
             >
               <Image
-                className="relative z-20 h-8 w-auto max-w-xs md:h-10 md:h-12 lg:max-w-none"
+                className="relative z-20 h-8 w-auto max-w-xs md:h-10 lg:h-12 lg:max-w-none"
                 alt={data.logo.alt}
                 src={data.logo.src}
                 width={160}
@@ -161,7 +161,7 @@ export const Header = ({ data }) => {
                                   <Link
                                     href={`${prefix}/${item.href}`}
                                     passHref
-                                    className={`font-medium relative inline-block select-none	whitespace-nowrap py-4 px-2 text-sm tracking-wide transition duration-150 ease-out hover:opacity-100 md:py-6 md:px-4 md:text-lg ${
+                                    className={`font-medium relative inline-block select-none	whitespace-nowrap py-4 px-2 text-sm tracking-wide transition duration-150 ease-out hover:opacity-100 lg:py-6 lg:px-4 md:text-lg ${
                                       activeItem ? `` : `opacity-70`
                                     }`}
                                     aria-current={
