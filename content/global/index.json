@@ -24,10 +24,6 @@
         "label": "Tým"
       },
       {
-        "href": "calendar",
-        "label": "Kalendář"
-      },
-      {
         "href": "contact",
         "label": "Kontakt"
       }
