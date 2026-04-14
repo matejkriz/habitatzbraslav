@@ -9,19 +9,6 @@ import backgroundWide from "../../public/images/background-wide.webp";
 export const Intro = ({ data }) => {
   return (
     <Section color={data.color} className="relative w-full">
-      <div className="bg-orange-300 w-full opacity-90 relative">
-         <div className="max-w-screen-xl mx-auto px-4 py-3 text-white text-center md:px-8 animate-[pulse_0.5s]">
-           <Link href="/form" className="duration-150 hover:text-green-800">
-             <p className="text-md md:text-lg">
-               Zaujala vás myšlenka dětské vzdělávací skupiny na Zbraslavi? <br />
-               Dejte nám prosím o sobě vědět prostřednictvím 👉{" "}
-               <span className="font-semibold underline inline-flex items-center gap-x-1">
-                 online formuláře
-               </span>
-             </p>
-           </Link>
-         </div>
-       </div>
       <div className="relative">
         <Image
           className={`relative max-h-[65vh] w-full lg:hidden`}
