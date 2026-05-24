@@ -2,15 +2,30 @@ import Link from "next/link";
 import * as React from "react";
 import { BiRightArrowAlt } from "react-icons/bi";
 import { useTheme } from "../layout";
+import type { ThemeColor } from "../layout/theme";
+
+type Action = {
+  type?: string | null;
+  label?: string | null;
+  link?: string | null;
+  icon?: boolean | null;
+};
+
+type ActionsProps = {
+  parentColor?: string | null;
+  parentField?: string;
+  className?: string;
+  actions?: (Action | null)[] | null;
+};
 
 export const Actions = ({
   parentColor = "default",
   parentField = "",
   className = "",
   actions,
-}) => {
+}: ActionsProps) => {
   const theme = useTheme();
-  const buttonColorClasses = {
+  const buttonColorClasses: Record<ThemeColor, string> = {
     blue: "text-white bg-blue-500 hover:bg-blue-600",
     teal: "text-white bg-teal-500 hover:bg-teal-600",
     green: "text-white bg-green-500 hover:bg-green-600",
@@ -21,7 +36,7 @@ export const Actions = ({
     yellow: "text-gray-800 bg-yellow-500 hover:bg-yellow-600",
   };
 
-  const invertedButtonColorClasses = {
+  const invertedButtonColorClasses: Record<ThemeColor, string> = {
     blue: "text-blue-500 bg-white hover:bg-gray-50",
     teal: "text-teal-500 bg-white hover:bg-gray-50",
     green: "text-green-500 bg-white hover:bg-gray-50",
@@ -32,7 +47,7 @@ export const Actions = ({
     yellow: "text-yellow-500 bg-white hover:bg-gray-50",
   };
 
-  const linkButtonColorClasses = {
+  const linkButtonColorClasses: Record<ThemeColor, string> = {
     blue: "text-blue-600 dark:text-blue-400 hover:text-blue-400 dark:hover:text-blue-200",
     teal: "ttext-teal-600 dark:text-teal-400 hover:text-teal-400 dark:hover:text-teal-200",
     green:
@@ -50,8 +65,9 @@ export const Actions = ({
   return (
     <div className={`flex flex-wrap items-center gap-y-4 gap-x-6 ${className}`}>
       {actions &&
-        actions.map(function (action, index) {
-          let element = null;
+        actions.map((action, index) => {
+          if (!action) return null;
+          let element: React.ReactNode = null;
           if (action.type === "button") {
             element = (
               <Link

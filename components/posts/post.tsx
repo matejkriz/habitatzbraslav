@@ -15,7 +15,7 @@ import React from "react";
 import { Container } from "../util/container";
 import { Section } from "../util/section";
 import { useTheme } from "../layout";
-import format from "date-fns/format";
+import { format } from "date-fns/format";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { Prism } from "tinacms/dist/rich-text/prism";
 import type { TinaMarkdownContent, Components } from "tinacms/dist/rich-text";
@@ -35,7 +35,9 @@ const components: Components<{
     disclaimer?: TinaMarkdownContent;
   };
 }> = {
-  code_block: (props) => <Prism {...props} />,
+  code_block: (props) => (
+    <Prism lang={props?.lang} value={props?.value ?? ""} />
+  ),
   BlockQuote: (props: {
     children: TinaMarkdownContent;
     authorName: string;
@@ -105,12 +107,21 @@ const components: Components<{
   },
   img: (props) => (
     <div className="flex items-center justify-center">
-      <img src={props.url} alt={props.alt} />
+      <img src={props?.url} alt={props?.alt} />
     </div>
   ),
 };
 
-export const Post = (props) => {
+type PostProps = {
+  title?: string;
+  date?: string | null;
+  heroImg?: string | null;
+  author?: { name?: string; avatar?: string | null } | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _body?: any;
+};
+
+export const Post = (props: PostProps) => {
   const theme = useTheme();
   const titleColorClasses = {
     blue: "from-blue-400 to-blue-600 dark:from-blue-300 dark:to-blue-500",
@@ -126,7 +137,7 @@ export const Post = (props) => {
       "from-yellow-400 to-yellow-500 dark:from-yellow-300 dark:to-yellow-500",
   };
 
-  const date = new Date(props.date);
+  const date = new Date(props.date ?? "");
   let formattedDate = "";
   if (!isNaN(date.getTime())) {
     formattedDate = format(date, "MMM dd, yyyy");
@@ -156,7 +167,7 @@ export const Post = (props) => {
               <div className="mr-4 flex-shrink-0">
                 <img
                   className="h-14 w-14 rounded-full object-cover shadow-sm"
-                  src={props.author.avatar}
+                  src={props.author.avatar ?? undefined}
                   alt={props.author.name}
                 />
               </div>

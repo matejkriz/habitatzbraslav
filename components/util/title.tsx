@@ -1,7 +1,12 @@
 import React from "react";
 import Image from "next/image";
 
-export const Title = (props) => {
+type TitleProps = {
+  image?: { src: string; alt: string };
+  title?: string;
+};
+
+export const Title = (props: TitleProps) => {
   return (
     <div className="flex items-center">
       {props.image && (

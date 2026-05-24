@@ -11,10 +11,12 @@ export const colorOptions = [
   "pink",
   "purple",
   "white",
-];
+] as const;
+
+type ColorKey = (typeof colorOptions)[number];
 
 export const ColorPickerInput = wrapFieldsWithMeta(({ input }) => {
-  const inputClasses = {
+  const inputClasses: Record<ColorKey, string> = {
     blue: "bg-blue-500 border-blue-600",
     teal: "bg-teal-500 border-teal-600",
     green: "bg-green-500 border-green-600",
@@ -33,6 +35,7 @@ export const ColorPickerInput = wrapFieldsWithMeta(({ input }) => {
         {colorOptions.map((color) => {
           return (
             <button
+              key={color}
               className={`h-9 w-9 rounded-full border shadow ${
                 inputClasses[color]
               } ${

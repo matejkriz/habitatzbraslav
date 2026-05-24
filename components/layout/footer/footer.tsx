@@ -6,7 +6,26 @@ import { Container } from "../../util/container";
 import { useTheme } from "..";
 import Image from "next/image";
 
-export const Footer = ({ data, logo }) => {
+type FooterSocial = {
+  facebook?: string | null;
+  twitter?: string | null;
+  instagram?: string | null;
+  github?: string | null;
+};
+
+type FooterData = {
+  color?: string | null;
+  social?: FooterSocial | null;
+};
+
+type FooterLogo = { src?: string | null; alt?: string | null };
+
+type FooterProps = {
+  data: FooterData;
+  logo: FooterLogo;
+};
+
+export const Footer = ({ data, logo }: FooterProps) => {
   const theme = useTheme();
   const socialIconClasses = "h-7 w-auto";
   const socialIconColorClasses = {
@@ -52,8 +71,8 @@ export const Footer = ({ data, logo }) => {
           >
             <Image
               className="relative z-10 h-auto w-full max-w-xs rounded-lg lg:max-w-none"
-              alt={logo.alt}
-              src={logo.src}
+              alt={logo.alt ?? ""}
+              src={logo.src ?? ""}
               width={320}
               height={100}
             />

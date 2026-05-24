@@ -5,8 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import background from "../../public/images/background.webp";
 import backgroundWide from "../../public/images/background-wide.webp";
+import type { PageBlocksIntro } from "@/tina/__generated__/types";
 
-export const Intro = ({ data }) => {
+export const Intro = ({ data }: { data: PageBlocksIntro }) => {
   return (
     <Section color={data.color} className="relative w-full">
       <div className="relative">
@@ -55,4 +56,4 @@ export const introBlockSchema: TinaTemplate = {
       ],
     },
   ],
-};
+} as any;

@@ -1,7 +1,29 @@
 import * as React from "react";
 import GlobalData from "../../content/global/index.json";
 
-const ThemeContext = React.createContext(GlobalData.theme);
+export type ThemeColor =
+  | "blue"
+  | "teal"
+  | "green"
+  | "red"
+  | "pink"
+  | "purple"
+  | "orange"
+  | "yellow";
+
+export type ThemeData = {
+  color: ThemeColor;
+  font: string;
+  darkMode: string;
+};
+
+type ThemeInput = {
+  color?: string | null;
+  font?: string | null;
+  darkMode?: string | null;
+};
+
+const ThemeContext = React.createContext<ThemeData>(GlobalData.theme as ThemeData);
 
 export const useTheme = () => React.useContext(ThemeContext);
 
@@ -14,7 +36,7 @@ const updateRenderColorMode = (themeMode: "dark" | "light") => {
   }
 };
 
-const getUserSystemDarkMode = () => {
+const getUserSystemDarkMode = (): "light" | "dark" => {
   if (typeof window !== "undefined") {
     const userMedia = window.matchMedia("(prefers-color-scheme: dark)");
 
@@ -26,7 +48,12 @@ const getUserSystemDarkMode = () => {
   return "light";
 };
 
-export const Theme = ({ data, children }) => {
+type ThemeProps = {
+  data?: ThemeInput | null;
+  children: React.ReactNode;
+};
+
+export const Theme = ({ data, children }: ThemeProps) => {
   const [systemDarkMode, setSystemDarkMode] = React.useState(
     getUserSystemDarkMode()
   );
@@ -35,7 +62,7 @@ export const Theme = ({ data, children }) => {
     if (typeof window !== "undefined") {
       const userMedia = window.matchMedia("(prefers-color-scheme: dark)");
 
-      const updateSystemMediaPreference = (event) => {
+      const updateSystemMediaPreference = (event: MediaQueryListEvent) => {
         setSystemDarkMode(event.matches ? "dark" : "light");
       };
 
@@ -47,13 +74,15 @@ export const Theme = ({ data, children }) => {
     return;
   }, [setSystemDarkMode]);
 
-  const { color = "yellow", font = "sans", darkMode = "system" } = data;
+  const color = data?.color ?? "yellow";
+  const font = data?.font ?? "sans";
+  const darkMode = data?.darkMode ?? "system";
 
   React.useEffect(() => {
     updateRenderColorMode(
       darkMode === "system"
         ? systemDarkMode
-        : darkMode !== ""
+        : darkMode === "dark" || darkMode === "light"
         ? darkMode
         : "light"
     );
@@ -62,7 +91,7 @@ export const Theme = ({ data, children }) => {
   return (
     <ThemeContext.Provider
       value={{
-        color,
+        color: color as ThemeColor,
         font,
         darkMode,
       }}

@@ -1,5 +1,6 @@
+import type { GetStaticPaths, GetStaticProps } from "next";
 import { Post } from "../../components/posts/post";
-import { client } from "../../.tina/__generated__/client";
+import { client } from "../../tina/__generated__/client";
 import { useTina } from "tinacms/dist/react";
 import { Layout } from "../../components/layout";
 
@@ -27,16 +28,16 @@ export default function BlogPostPage(
   );
 }
 
-export const getStaticProps = async ({ params }) => {
+export const getStaticProps = (async ({ params }) => {
   const tinaProps = await client.queries.blogPostQuery({
-    relativePath: `${params.filename}.mdx`,
+    relativePath: `${params?.filename as string}.mdx`,
   });
   return {
     props: {
       ...tinaProps,
     },
   };
-};
+}) satisfies GetStaticProps;
 
 /**
  * To build the blog post pages we just iterate through the list of
@@ -45,15 +46,19 @@ export const getStaticProps = async ({ params }) => {
  * So a blog post at "content/posts/hello.md" would
  * be viewable at http://localhost:3000/posts/hello
  */
-export const getStaticPaths = async () => {
+export const getStaticPaths = (async () => {
   const postsListData = await client.queries.postConnection();
+  const edges = postsListData.data.postConnection.edges ?? [];
   return {
-    paths: postsListData.data.postConnection.edges.map((post) => ({
-      params: { filename: post.node._sys.filename },
-    })),
+    paths: edges.flatMap((post) => {
+      const node = post?.node;
+      if (!node) return [];
+      if (node._sys.breadcrumbs.length !== 1) return [];
+      return [{ params: { filename: node._sys.filename } }];
+    }),
     fallback: "blocking",
   };
-};
+}) satisfies GetStaticPaths;
 
-export type AsyncReturnType<T extends (...args) => Promise<unknown>> =
-  T extends (...args) => Promise<infer R> ? R : unknown;
+export type AsyncReturnType<T extends (...args: never[]) => Promise<unknown>> =
+  T extends (...args: never[]) => Promise<infer R> ? R : unknown;

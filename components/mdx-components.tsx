@@ -4,8 +4,15 @@ import { Components, TinaMarkdown, TinaMarkdownContent } from 'tinacms/dist/rich
 import Image from 'next/image';
 import { Prism } from 'tinacms/dist/rich-text/prism';
 import { Video } from './blocks/video';
-import { PageBlocksVideo } from '@/tina/__generated__/types';
 import { Mermaid } from './blocks/mermaid';
+
+type VideoBlockData = {
+  background?: string | null;
+  color?: string | null;
+  url?: string | null;
+  autoPlay?: boolean | null;
+  loop?: boolean | null;
+};
 
 function getContrastColor(hex: string): string {
   const c = hex.replace('#', '');
@@ -31,7 +38,7 @@ export const components: Components<{
     children: TinaMarkdownContent;
     disclaimer?: TinaMarkdownContent;
   };
-  video: PageBlocksVideo;
+  video: VideoBlockData;
 }> = {
   code_block: (props) => {
     if (!props) {

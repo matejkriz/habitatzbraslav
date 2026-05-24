@@ -1,7 +1,7 @@
 import "../styles.css";
+import type { AppProps } from "next/app";
 import localFont from "next/font/local";
 import { Montserrat } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
 
 const truculenta = localFont({
   src: "../public/fonts/truculenta.ttf",
@@ -13,13 +13,12 @@ const montserrat = Montserrat({
   variable: "--font-montserrat",
 });
 
-const App = ({ Component, pageProps }) => {
+const App = ({ Component, pageProps }: AppProps) => {
   return (
     <main
       className={`${truculenta.variable} ${montserrat.variable} font-montserrat`}
     >
       <Component {...pageProps} />
-      <Analytics />
     </main>
   );
 };

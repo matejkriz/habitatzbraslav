@@ -1,24 +1,15 @@
-import { Hero } from "../components/blocks/hero";
-import { Layout } from "../components/layout";
-
 export default function FourOhFour() {
   return (
-    <Layout>
-      <Hero
-        data={{
-          color: "default",
-          headline: "404 – Page Not Found",
-          text: "Oops! It seems there's nothing here, how embarrassing.",
-          actions: [
-            {
-              label: "Return Home",
-              type: "button",
-              icon: true,
-              link: "/",
-            },
-          ],
-        }}
-      />
-    </Layout>
+    <main className="flex min-h-screen items-center justify-center bg-white px-6 text-center text-green-900">
+      <div>
+        <h1 className="font-truculenta text-5xl font-extrabold">
+          404 - Page Not Found
+        </h1>
+        <p className="mt-4 text-lg">Oops! It seems there&apos;s nothing here.</p>
+        <a className="mt-8 inline-block font-semibold underline" href="/">
+          Return Home
+        </a>
+      </div>
+    </main>
   );
 }

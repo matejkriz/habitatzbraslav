@@ -1,6 +1,18 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: ["@svgr/webpack"],
+    });
+
+    return config;
+  },
   images: {
     remotePatterns: [
       {
@@ -14,6 +26,10 @@ const nextConfig: NextConfig = {
         port: '',
       }
     ],
+  },
+  i18n: {
+    locales: ["cs"],
+    defaultLocale: "cs",
   },
   async headers() {
     // these are also defined in the root layout since github pages doesn't support headers
@@ -36,6 +52,10 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
+      {
+        source: '/',
+        destination: '/home',
+      },
       {
         source: '/admin',
         destination: '/admin/index.html',

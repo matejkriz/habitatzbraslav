@@ -1,7 +1,17 @@
 import React from "react";
 import { useTheme } from "../layout";
 
-export const Section = ({ children, color = "", className = "" }) => {
+type SectionProps = {
+  children?: React.ReactNode;
+  color?: string | null;
+  className?: string;
+};
+
+export const Section = ({
+  children,
+  color = "",
+  className = "",
+}: SectionProps) => {
   const theme = useTheme();
   const sectionColor = {
     default: "text-gray-800 dark:text-gray-50 bg-white",
@@ -20,7 +30,7 @@ export const Section = ({ children, color = "", className = "" }) => {
   const sectionColorCss =
     color === "primary"
       ? sectionColor.primary[theme.color]
-      : sectionColor[color] ?? sectionColor.default;
+      : sectionColor[color as keyof typeof sectionColor] ?? sectionColor.default;
 
   return (
     <section

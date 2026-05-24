@@ -2,8 +2,9 @@ import React from "react";
 import { Section } from "../util/section";
 import { Container } from "../util/container";
 import type { TinaTemplate } from "tinacms";
+import type { PageBlocksForm } from "@/tina/__generated__/types";
 
-export const Form = ({ data }) => {
+export const Form = ({ data }: { data: PageBlocksForm }) => {
   return (
     <Section color={data.color} className="relative w-full">
         <Container className={`relative w-full overflow-hidden pt-[100%]`} size="medium" width="custom">
@@ -36,4 +37,4 @@ export const formBlockSchema: TinaTemplate = {
       ],
     },
   ],
-};
+} as any;

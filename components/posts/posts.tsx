@@ -3,9 +3,20 @@ import Link from "next/link";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { BsArrowRight } from "react-icons/bs";
 import { useTheme } from "../layout";
-import format from "date-fns/format";
+import { format } from "date-fns/format";
 
-export const Posts = ({ data }) => {
+type PostEdge = {
+  node?: {
+    title: string;
+    date?: string | null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    excerpt?: any;
+    author?: { name?: string | null; avatar?: string | null } | null;
+    _sys: { filename: string; breadcrumbs: string[] };
+  } | null;
+} | null;
+
+export const Posts = ({ data }: { data: PostEdge[] }) => {
   const theme = useTheme();
   const titleColorClasses = {
     blue: "group-hover:text-blue-600 dark:group-hover:text-blue-300",
@@ -21,8 +32,11 @@ export const Posts = ({ data }) => {
   return (
     <>
       {data.map((postData) => {
-        const post = postData.node;
-        const date = new Date(post.date);
+        const post = postData?.node;
+        if (!post) {
+          return null;
+        }
+        const date = new Date(post.date ?? "");
         let formattedDate = "";
         if (!isNaN(date.getTime())) {
           formattedDate = format(date, "MMM dd, yyyy");
@@ -39,20 +53,20 @@ export const Posts = ({ data }) => {
                 titleColorClasses[theme.color]
               }`}
             >
-              {post._values.title}{" "}
+              {post.title}{" "}
               <span className="inline-block opacity-0 transition-all duration-300 ease-out group-hover:opacity-100">
                 <BsArrowRight className="-mt-1 ml-1 inline-block h-8 w-auto opacity-70" />
               </span>
             </h3>
             <div className="prose mb-5 w-full max-w-none opacity-70 dark:prose-dark">
-              <TinaMarkdown content={post._values.excerpt} />
+              <TinaMarkdown content={post.excerpt} />
             </div>
             <div className="flex items-center">
               <div className="mr-2 flex-shrink-0">
                 <img
                   className="h-10 w-10 rounded-full object-cover shadow-sm"
-                  src={post?.author?.avatar}
-                  alt={post?.author?.name}
+                  src={post?.author?.avatar ?? undefined}
+                  alt={post?.author?.name ?? undefined}
                 />
               </div>
               <p className="text-base font-medium text-gray-600 group-hover:text-gray-800 dark:text-gray-200 dark:group-hover:text-white">

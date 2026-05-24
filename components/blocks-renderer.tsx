@@ -1,5 +1,5 @@
 import React from "react";
-import type { Page } from "../.tina/__generated__/types";
+import type { Page } from "../tina/__generated__/types";
 import { Content } from "./blocks/content";
 import { Features } from "./blocks/features";
 import { Hero } from "./blocks/hero";
@@ -12,6 +12,9 @@ export const Blocks = (props: Omit<Page, "id" | "_sys" | "_values">) => {
     <>
       {props.blocks
         ? props.blocks.map(function (block, i) {
+            if (!block) {
+              return null;
+            }
             switch (block.__typename) {
               case "PageBlocksContent":
                 return (

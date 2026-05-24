@@ -1,11 +1,10 @@
 import * as React from "react";
-import { ColorPickerInput } from "../fields/color";
-import { IconPickerInput } from "../fields/icon";
 import { useTheme } from "../layout";
+import type { ThemeColor } from "../layout/theme";
 import * as BoxIcons from "react-icons/bi";
 
 export const IconOptions = {
-  Tina: (props) => (
+  Tina: (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       {...props}
       viewBox="0 0 66 80"
@@ -26,9 +25,11 @@ export const IconOptions = {
   ...BoxIcons,
 };
 
-const iconColorClass: {
-  [name: string]: { regular: string; circle: string };
-} = {
+type IconName = keyof typeof IconOptions;
+type IconColor = ThemeColor | "white";
+type IconSize = "xs" | "small" | "medium" | "large" | "xl" | "custom";
+
+const iconColorClass: Record<IconColor, { regular: string; circle: string }> = {
   blue: {
     regular: "text-blue-400",
     circle: "bg-blue-400 dark:bg-blue-500 text-blue-50",
@@ -67,7 +68,7 @@ const iconColorClass: {
   },
 };
 
-const iconSizeClass = {
+const iconSizeClass: Record<IconSize, string> = {
   xs: "w-6 h-6 flex-shrink-0",
   small: "w-8 h-8 flex-shrink-0",
   medium: "w-12 h-12 flex-shrink-0",
@@ -76,31 +77,47 @@ const iconSizeClass = {
   custom: "",
 };
 
+type IconData = {
+  name?: string | null;
+  color?: string | null;
+  size?: IconSize | number;
+  style?: "regular" | "circle" | string | null;
+};
+
+type IconProps = {
+  data: IconData;
+  parentColor?: string;
+  className?: string;
+  tinaField?: string;
+};
+
 export const Icon = ({
   data,
   parentColor = "",
   className = "",
   tinaField = "",
-}) => {
-  if (IconOptions[data.name] === null || IconOptions[data.name] === undefined) {
+}: IconProps) => {
+  const theme = useTheme();
+
+  const iconName = data.name as IconName | undefined;
+  if (!iconName || IconOptions[iconName] === undefined) {
     return null;
   }
 
-  const { name, color, size = "medium", style = "regular" } = data;
+  const { color, size = "medium", style = "regular" } = data;
 
-  const theme = useTheme();
+  const IconSVG = IconOptions[iconName];
 
-  const IconSVG = IconOptions[name];
-
-  const iconSizeClasses =
+  const iconSizeKey: IconSize =
     typeof size === "string"
-      ? iconSizeClass[size]
-      : iconSizeClass[Object.keys(iconSizeClass)[size]];
+      ? (size as IconSize)
+      : ((Object.keys(iconSizeClass) as IconSize[])[size] ?? "medium");
+  const iconSizeClasses = iconSizeClass[iconSizeKey];
 
-  const iconColor = color
+  const iconColor: IconColor = color
     ? color === "primary"
       ? theme.color
-      : color
+      : (color as IconColor)
     : theme.color;
 
   if (style == "circle") {
@@ -116,7 +133,7 @@ export const Icon = ({
     const iconColorClasses =
       iconColorClass[
         parentColor === "primary" &&
-        (iconColor === theme.color || iconColor === "primary")
+        (iconColor === theme.color || (iconColor as string) === "primary")
           ? "white"
           : iconColor
       ].regular;
@@ -138,17 +155,11 @@ export const iconSchema = {
       type: "string",
       label: "Icon",
       name: "name",
-      ui: {
-        component: IconPickerInput,
-      },
     },
     {
       type: "string",
       label: "Color",
       name: "color",
-      ui: {
-        component: ColorPickerInput,
-      },
     },
     {
       name: "style",

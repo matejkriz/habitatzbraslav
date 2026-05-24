@@ -2,15 +2,36 @@ import React from "react";
 import Link from "next/link";
 import { Disclosure, Transition } from "@headlessui/react";
 import { BiMenu, BiX } from "react-icons/bi";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 import { Container } from "../util/container";
 import { useTheme } from ".";
 import Image from "next/image";
 
-const RouterChangeComplete = ({ callback, children }) => {
+type NavItem = { href?: string | null; label?: string | null };
+
+type HeaderLogo = { src?: string | null; alt?: string | null };
+
+type HeaderData = {
+  color?: string | null;
+  logo: HeaderLogo;
+  nav?: (NavItem | null)[] | null;
+};
+
+type RouterChangeCompleteProps = {
+  callback: () => void;
+  children: React.ReactNode;
+};
+
+const RouterChangeComplete = ({
+  callback,
+  children,
+}: RouterChangeCompleteProps) => {
   const router = useRouter();
 
   React.useEffect(() => {
+    if (!router) {
+      return;
+    }
     const handleRouteChange = () => {
       callback();
     };
@@ -20,12 +41,13 @@ const RouterChangeComplete = ({ callback, children }) => {
     };
   }, []);
 
-  return children;
+  return <>{children}</>;
 };
 
-export const Header = ({ data }) => {
+export const Header = ({ data }: { data: HeaderData }) => {
   const router = useRouter();
   const theme = useTheme();
+  const currentPath = router?.asPath ?? "";
 
   const headerColor = {
     default: "text-green-900 dark:text-white bg-white dark:bg-yellow-800",
@@ -95,8 +117,8 @@ export const Header = ({ data }) => {
             >
               <Image
                 className="relative z-20 h-8 w-auto max-w-xs md:h-10 lg:h-12 lg:max-w-none"
-                alt={data.logo.alt}
-                src={data.logo.src}
+                alt={data.logo.alt ?? ""}
+                src={data.logo.src ?? ""}
                 width={160}
                 height={40}
               />
@@ -112,6 +134,7 @@ export const Header = ({ data }) => {
                       <Disclosure.Button className="relative z-50 inline-flex items-center justify-center p-2 text-[#BAC590] focus:outline-none">
                         <span className="sr-only">Otevřít hlavní menu</span>
                         <Transition
+                          as="div"
                           className="absolute transition-transform hover:scale-110"
                           show={open}
                           enter="transition duration-200 ease-out"
@@ -124,6 +147,7 @@ export const Header = ({ data }) => {
                           <BiX className="block h-8 w-8" aria-hidden="true" />
                         </Transition>
                         <Transition
+                          as="div"
                           className="absolute transition-transform hover:scale-110"
                           show={!open}
                           enter="transition duration-200 ease-out"
@@ -145,10 +169,12 @@ export const Header = ({ data }) => {
                         <div className="flex space-x-4">
                           <ul className="-mx-4 flex gap-2 tracking-[.002em] md:gap-3 md:gap-6 lg:gap-8">
                             {data.nav?.map((item, i) => {
+                              if (!item) return null;
+                              const href = item.href ?? "";
                               const activeItem =
-                                item.href === ""
-                                  ? ["/", "/home"].includes(router.asPath)
-                                  : router.asPath.includes(item.href);
+                                href === ""
+                                  ? ["/", "/home"].includes(currentPath)
+                                  : currentPath.includes(href);
                               return (
                                 <li
                                   key={`${item.label}-${i}`}
@@ -159,7 +185,7 @@ export const Header = ({ data }) => {
                                   }`}
                                 >
                                   <Link
-                                    href={`${prefix}/${item.href}`}
+                                    href={`${prefix}/${href}`}
                                     passHref
                                     className={`font-medium relative inline-block select-none	whitespace-nowrap py-4 px-2 text-sm tracking-wide transition duration-150 ease-out hover:opacity-100 lg:py-6 lg:px-4 md:text-lg ${
                                       activeItem ? `` : `opacity-70`
@@ -217,6 +243,7 @@ export const Header = ({ data }) => {
                   </div>
                 </div>
                 <Transition
+                  as="div"
                   className="absolute top-16 left-0 z-40 w-full shadow-md md:hidden"
                   enter="transition duration-100 ease-out"
                   enterFrom="transform -translate-y-1/4 opacity-0"
@@ -229,10 +256,12 @@ export const Header = ({ data }) => {
                     <div className="space-y-1 bg-white bg-opacity-90 px-6 pt-2 pb-3 backdrop-blur-xl">
                       <ul className="-mx-4 flex flex-col gap-2 tracking-[.002em] md:gap-3 md:gap-6 lg:gap-8">
                         {data.nav?.map((item, i) => {
+                          if (!item) return null;
+                          const href = item.href ?? "";
                           const activeItem =
-                            item.href === ""
-                              ? ["/", "/home"].includes(router.asPath)
-                              : router.asPath.includes(item.href);
+                            href === ""
+                              ? ["/", "/home"].includes(currentPath)
+                              : currentPath.includes(href);
                           return (
                             <li
                               key={`${item.label}-${i}`}
@@ -241,7 +270,7 @@ export const Header = ({ data }) => {
                               }`}
                             >
                               <Link
-                                href={`${prefix}/${item.href}`}
+                                href={`${prefix}/${href}`}
                                 passHref
                                 className={`relative inline-block w-full select-none whitespace-nowrap py-4	px-2 text-center font-medium text-lg tracking-wide transition duration-150 ease-out hover:opacity-100  focus:bg-yellow-500 focus:bg-opacity-50 active:bg-yellow-500 active:bg-opacity-70 md:py-6 md:px-4 md:text-base ${
                                   activeItem ? `` : `opacity-70`
