@@ -253,7 +253,7 @@ export const Header = ({ data }: { data: HeaderData }) => {
                   leaveTo="transform scale-y-70 opacity-0"
                 >
                   <Disclosure.Panel>
-                    <div className="space-y-1 bg-white bg-opacity-90 px-6 pt-2 pb-3 backdrop-blur-xl">
+                    <div className="space-y-1 bg-white/90 px-6 pt-2 pb-3 backdrop-blur-xl">
                       <ul className="-mx-4 flex flex-col gap-2 tracking-[.002em] md:gap-3 md:gap-6 lg:gap-8">
                         {data.nav?.map((item, i) => {
                           if (!item) return null;
@@ -272,7 +272,7 @@ export const Header = ({ data }: { data: HeaderData }) => {
                               <Link
                                 href={`${prefix}/${href}`}
                                 passHref
-                                className={`relative inline-block w-full select-none whitespace-nowrap py-4	px-2 text-center font-medium text-lg tracking-wide transition duration-150 ease-out hover:opacity-100  focus:bg-yellow-500 focus:bg-opacity-50 active:bg-yellow-500 active:bg-opacity-70 md:py-6 md:px-4 md:text-base ${
+                                className={`relative inline-block w-full select-none whitespace-nowrap py-4	px-2 text-center font-medium text-lg tracking-wide transition duration-150 ease-out hover:opacity-100  focus:bg-yellow-500/50 active:bg-yellow-500/70 md:py-6 md:px-4 md:text-base ${
                                   activeItem ? `` : `opacity-70`
                                 }`}
                                 tabIndex={0}
