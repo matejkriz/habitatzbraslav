@@ -123,3 +123,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+.prose {
+  --tw-prose-headings: var(--color-emerald-800);
+}
+.prose :is(h1, h2, h3, h4, blockquote, a) {
+  font-family: var(--font-truculenta);
+}
