@@ -5,6 +5,8 @@
 @plugin "@tailwindcss/typography";
 
 @theme inline {
+  --font-truculenta: var(--font-truculenta);
+  --font-montserrat: var(--font-montserrat);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
