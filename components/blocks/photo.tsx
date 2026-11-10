@@ -13,7 +13,7 @@ export const Photo = ({
 
   return (
     <div
-      className="relative aspect-[3/1] w-full md:aspect-[9/2]"
+      className="relative aspect-[3/1] w-full md:aspect-[4/1]"
       data-tinafield={`${parentField}.src`}
     >
       <Image
