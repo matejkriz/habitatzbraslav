@@ -7,6 +7,16 @@ import { List } from "../util/list";
 import { CustomColorPickerInput } from "../fields/customColor";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import type { TinaTemplate } from "tinacms";
+import { InvitationHeading } from "../util/invitation-heading";
+import { RegistrationCard } from "../util/registration-card";
+
+const contentComponents = {
+  Title,
+  List,
+  Button,
+  InvitationHeading,
+  RegistrationCard,
+};
 
 export const Content = ({ data, parentField = "" }) => {
   return (
@@ -17,7 +27,7 @@ export const Content = ({ data, parentField = "" }) => {
         size="medium"
         width="custom"
       >
-        <TinaMarkdown content={data.body} components={{ Title, List, Button }} />
+        <TinaMarkdown content={data.body} components={contentComponents} />
       </Container>
     </Section>
   );
@@ -38,6 +48,25 @@ export const contentBlockSchema: TinaTemplate = {
       label: "Body",
       name: "body",
       templates: [
+        {
+          name: "InvitationHeading",
+          label: "Nadpis pozvánky",
+          fields: [
+            { name: "eyebrow", label: "Úvod nadpisu", type: "string" },
+            { name: "emphasis", label: "Zvýrazněný text", type: "string" },
+            { name: "text", label: "Pokračování nadpisu", type: "string" },
+          ],
+        },
+        {
+          name: "RegistrationCard",
+          label: "Přihlašovací karta",
+          fields: [
+            { name: "title", label: "Nadpis", type: "string" },
+            { name: "text", label: "Text", type: "string" },
+            { name: "label", label: "Text odkazu", type: "string" },
+            { name: "link", label: "Odkaz na formulář", type: "string" },
+          ],
+        },
         {
           name: "Title",
           label: "Nadpis",
