@@ -7,6 +7,7 @@ import { Testimonial } from "./blocks/testimonial";
 import { Intro } from "./blocks/intro";
 import { Form } from "./blocks/form";
 import { Announcement } from "./blocks/announcement";
+import { Photo } from "./blocks/photo";
 
 export const Blocks = (props: Omit<Page, "id" | "_sys" | "_values">) => {
   return (
@@ -14,6 +15,15 @@ export const Blocks = (props: Omit<Page, "id" | "_sys" | "_values">) => {
       {props.blocks
         ? props.blocks.map(function (block, i) {
             switch (block.__typename) {
+              case "PageBlocksPhoto":
+                return (
+                  <div
+                    data-tinafield={`blocks.${i}`}
+                    key={i + block.__typename}
+                  >
+                    <Photo data={block} parentField={`blocks.${i}`} />
+                  </div>
+                );
               case "PageBlocksAnnouncement":
                 return (
                   <div

@@ -6,6 +6,7 @@ import { testimonialBlockSchema } from "../components/blocks/testimonial";
 import { introBlockSchema } from "../components/blocks/intro";
 import { formBlockSchema } from "../components/blocks/form";
 import { announcementBlockSchema } from "../components/blocks/announcement";
+import { photoBlockSchema } from "../components/blocks/photo";
 import { ColorPickerInput } from "../components/fields/color";
 import { iconSchema } from "../components/util/icon";
 
@@ -392,6 +393,7 @@ const config = defineConfig({
               introBlockSchema,
               formBlockSchema,
               announcementBlockSchema,
+              photoBlockSchema,
             ],
           },
         ],
