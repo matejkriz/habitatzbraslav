@@ -13,7 +13,7 @@ export const Photo = ({
 
   return (
     <div
-      className="relative aspect-[3/2] w-full md:aspect-[21/9]"
+      className="relative aspect-[3/1] w-full md:aspect-[9/2]"
       data-tinafield={`${parentField}.src`}
     >
       <Image
@@ -21,7 +21,7 @@ export const Photo = ({
         alt={data.alt ?? ""}
         fill
         sizes="100vw"
-        className="object-cover object-[50%_60%]"
+        className="object-cover object-[50%_65%]"
       />
     </div>
   );
