@@ -9,6 +9,7 @@ import type { TinaTemplate } from "tinacms";
 
 export const Hero = ({ data, parentField }) => {
   const theme = useTheme();
+  const hasImage = Boolean(data.image?.src?.trim());
   const headlineColorClasses = {
     blue: "text-blue-600",
     teal: "text-teal-600",
@@ -25,12 +26,12 @@ export const Hero = ({ data, parentField }) => {
       <Container
         size="medium"
         className={`grid grid-cols-1 items-center justify-center ${
-          data.image && "lg:grid-cols-5"
+          hasImage && "lg:grid-cols-5"
         }`}
       >
         <div
           className={`row-start-2 text-center ${
-            data.image && "lg:col-span-3 lg:row-start-1 lg:text-left"
+            hasImage && "lg:col-span-3 lg:row-start-1 lg:text-left"
           }`}
         >
           {data.tagline && (
@@ -56,7 +57,7 @@ export const Hero = ({ data, parentField }) => {
             <div
               data-tinafield={`${parentField}.text`}
               className={`prose prose-lg mx-auto mb-10 ${
-                data.image && "lg:mx-0"
+                hasImage && "lg:mx-0"
               }`}
             >
               <TinaMarkdown content={data.text} />
@@ -66,14 +67,14 @@ export const Hero = ({ data, parentField }) => {
             <Actions
               parentField={`${parentField}.actions`}
               className={`justify-center py-2 ${
-                data.image && "lg:justify-start"
+                hasImage && "lg:justify-start"
               }`}
               parentColor={data.color}
               actions={data.actions}
             />
           )}
         </div>
-        {data.image && (
+        {hasImage && (
           <div
             data-tinafield={`${parentField}.image`}
             className="relative row-start-1 flex justify-center lg:col-span-2"
