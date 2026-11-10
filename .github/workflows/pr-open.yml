@@ -2,22 +2,20 @@ name: Build Pull request
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-env:
-  NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-  TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-  NEXT_PUBLIC_TINA_BRANCH: ${{ github.head_ref }}
+permissions:
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: ["14", "16", "17"]
-    name: Node ${{ matrix.node }} sample
+    timeout-minutes: 15
+    name: Node 22 build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: ${{ matrix.node }}
-      - run: yarn install
-      - run: yarn build
+          node-version: "22"
+      - name: Install locked dependencies
+        run: npx --yes pnpm@7.33.7 install --frozen-lockfile
+      - name: Build with local content
+        run: node_modules/.bin/tinacms dev -c 'node_modules/.bin/next build'
