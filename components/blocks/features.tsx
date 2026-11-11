@@ -5,12 +5,19 @@ import { Icon } from "../util/icon";
 import { iconSchema } from "../util/icon";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 
-export const Feature = ({ featuresColor, data, tinaField }) => {
+export const Feature = ({
+  featuresColor,
+  data,
+  tinaField,
+  compact = false,
+}) => {
   return (
     <div
       data-tinafield={tinaField}
-      className="mx-auto flex max-w-xl flex-1 flex-col items-center gap-6 text-center"
-      style={{ flexBasis: "16rem" }}
+      className={`mx-auto flex max-w-xl flex-1 flex-col items-center text-center ${
+        compact ? "gap-4" : "gap-6"
+      }`}
+      style={compact ? undefined : { flexBasis: "16rem" }}
     >
       {data.icon && (
         <Icon
@@ -41,11 +48,18 @@ export const Feature = ({ featuresColor, data, tinaField }) => {
 };
 
 export const Features = ({ data, parentField }) => {
+  const compact = data.layout === "compact";
+
   return (
     <Section color={data.color}>
       <Container
-        className={`flex flex-wrap gap-x-10 gap-y-8 text-left`}
-        size="large"
+        className={
+          compact
+            ? "grid grid-cols-1 gap-8 text-left sm:grid-cols-2"
+            : "flex flex-wrap gap-x-10 gap-y-8 text-left"
+        }
+        size={compact ? "medium" : "large"}
+        width={compact ? "small" : "large"}
       >
         {data.items &&
           data.items.map(function (block, i) {
@@ -55,6 +69,7 @@ export const Features = ({ data, parentField }) => {
                 featuresColor={data.color}
                 key={i}
                 data={block}
+                compact={compact}
               />
             );
           })}
@@ -83,6 +98,15 @@ export const featureBlockSchema = {
     },
   },
   fields: [
+    {
+      type: "string",
+      label: "Rozložení",
+      name: "layout",
+      options: [
+        { label: "Standardní", value: "default" },
+        { label: "Kompaktní", value: "compact" },
+      ],
+    },
     {
       type: "object",
       label: "Feature Items",

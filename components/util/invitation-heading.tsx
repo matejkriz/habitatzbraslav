@@ -11,15 +11,15 @@ export const InvitationHeading = ({
   emphasis,
   text,
 }: InvitationHeadingProps) => (
-  <div className="not-prose my-10 text-left text-green-900 sm:my-12">
-    <p className="mb-4 font-montserrat text-xs font-semibold uppercase leading-relaxed tracking-[0.12em] text-green-800 sm:text-sm">
+  <div className="not-prose my-10 text-center sm:my-12">
+    <p className="mb-4 font-montserrat text-sm font-bold uppercase leading-relaxed tracking-[0.1em] text-orange-700">
       {eyebrow}
     </p>
-    <h2 className="m-0 font-truculenta">
-      <span className="block text-[2.75rem] font-extrabold leading-[1.05] tracking-tight sm:text-6xl">
+    <h2 className="m-0 font-truculenta font-bold text-green-900">
+      <span className="block text-4xl leading-[1.05] sm:text-6xl">
         {emphasis}
       </span>{" "}
-      <span className="mt-3 block max-w-[26ch] text-2xl font-medium leading-[1.2] sm:text-4xl">
+      <span className="mx-auto mt-4 block max-w-[25ch] text-2xl leading-[1.2] sm:text-3xl">
         {text}
       </span>
     </h2>
