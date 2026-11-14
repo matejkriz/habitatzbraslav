@@ -1,305 +1,143 @@
 import React from "react";
 import Link from "next/link";
-import { Disclosure, Transition } from "@headlessui/react";
-import { BiMenu, BiX } from "react-icons/bi";
-import { useRouter } from "next/router";
-import { Container } from "../util/container";
-import { useTheme } from ".";
 import Image from "next/image";
+import { Container } from "../util/container";
+import {
+  MenuIcon,
+  useEscape,
+  useNavItems,
+  useRouteChange,
+  useScrolled,
+} from "./nav-shared";
 
-const RouterChangeComplete = ({ callback, children }) => {
-  const router = useRouter();
+// Loose, hand-cut shapes in the spirit of the painted leaves in the hero.
+const BLOBS = [
+  "M9 47C2 30 15 13 44 9C70 5 92 15 118 8C146 1 182 6 194 26C203 42 192 63 168 71C142 79 118 69 92 74C62 80 22 75 9 47Z",
+  "M6 38C8 17 36 4 66 9C88 12 104 3 134 5C168 7 196 22 194 44C192 66 168 78 136 74C110 71 92 79 64 76C30 73 4 62 6 38Z",
+  "M14 53C4 37 12 16 38 10C64 4 80 14 108 11C138 7 170 1 188 20C204 37 196 62 170 71C148 78 126 72 100 76C66 81 26 72 14 53Z",
+  "M8 41C10 20 32 8 60 11C86 14 100 4 130 7C162 10 192 17 195 40C198 63 176 76 144 73C116 70 98 78 70 76C36 74 6 64 8 41Z",
+];
+// Pale tints of the logo colours, dark-green text stays well above 7:1.
+const TINTS = ["#FBEFB0", "#FBD5C4", "#E2E8CC", "#EEEAB4", "#FBD5C4"];
 
-  React.useEffect(() => {
-    const handleRouteChange = () => {
-      callback();
-    };
-    router.events.on("routeChangeComplete", handleRouteChange);
-    return () => {
-      router.events.off("routeChangeComplete", handleRouteChange);
-    };
-  }, []);
+const Blob = ({ index, className }: { index: number; className: string }) => (
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 200 80"
+    preserveAspectRatio="none"
+    className={`pointer-events-none absolute -left-3 -top-2 -z-1 h-[calc(100%+1rem)] w-[calc(100%+1.5rem)] transition duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${className}`}
+  >
+    <path d={BLOBS[index % BLOBS.length]} fill={TINTS[index % TINTS.length]} />
+  </svg>
+);
 
-  return children;
-};
-
+/**
+ * Varianta 5 – Barevné skvrny.
+ * Full-width bar; the current page sits on a soft, hand-cut blob in one of
+ * the logo colours, each page its own colour and shape. Hover lets the blob
+ * peek through.
+ */
 export const Header = ({ data }) => {
-  const router = useRouter();
-  const theme = useTheme();
-
-  const headerColor = {
-    default: "text-green-900 dark:text-white bg-white dark:bg-yellow-800",
-    primary: {
-      blue: "text-white from-blue-300 to-blue-500",
-      teal: "text-white from-teal-400 to-teal-500",
-      green: "text-white from-green-400 to-green-500",
-      red: "text-white from-red-400 to-red-500",
-      pink: "text-white from-pink-400 to-pink-500",
-      purple: "text-white from-purple-400 to-purple-500",
-      orange: "text-white from-orange-400 to-orange-500",
-      yellow: "text-white from-yellow-400 to-yellow-500",
-    },
-  };
-
-  const headerColorCss =
-    data.color === "primary"
-      ? headerColor.primary[theme.color]
-      : headerColor.default;
-
-  const activeItemClasses = {
-    blue: "border-b-3 border-blue-200 text-blue-700 dark:text-blue-300 font-medium dark:border-blue-700",
-    teal: "border-b-3 border-teal-200 text-teal-700 dark:text-teal-300 font-medium dark:border-teal-700",
-    green:
-      "border-b-3 border-green-200 text-green-700 dark:text-green-300 font-medium dark:border-green-700",
-    red: "border-b-3 border-red-300 text-red-700 dark:text-green-300 font-medium dark:border-red-700",
-    pink: "border-b-3 border-pink-200 text-pink-700 dark:text-pink-300 font-medium dark:border-pink-700",
-    purple:
-      "border-b-3 border-purple-200 text-purple-700 dark:text-purple-300 font-medium dark:border-purple-700",
-    orange:
-      "border-b-3 border-orange-200 text-orange-700 dark:text-orange-300 font-medium dark:border-orange-700",
-    yellow:
-      "border-b-3 border-yellow-300 text-yellow-700 dark:text-yellow-300 font-medium dark:border-yellow-600",
-  };
-
-  const activeBackgroundClasses = {
-    blue: "text-blue-500",
-    teal: "text-teal-500",
-    green: "text-green-500",
-    red: "text-red-500",
-    pink: "text-pink-500",
-    purple: "text-purple-500",
-    orange: "text-orange-500",
-    yellow: "text-yellow-500",
-  };
-
-  // If we're on an admin path, other links should also link to their admin paths
-  const [prefix, setPrefix] = React.useState("");
-
-  React.useEffect(() => {
-    if (window && window.location.pathname.startsWith("/admin")) {
-      setPrefix("/admin");
-    }
-  }, []);
+  const items = useNavItems(data.nav);
+  const scrolled = useScrolled();
+  const [open, setOpen] = React.useState(false);
+  const close = React.useCallback(() => setOpen(false), []);
+  useRouteChange(close);
+  useEscape(open, close);
 
   return (
-    <div
-      className={`sticky top-0 z-50 font-truculenta shadow-md ${headerColorCss}`}
-    >
-      <Container size="custom" className={`relative z-20 max-w-8xl py-0`}>
-        <div className="flex items-center justify-between gap-6">
-          <div className="my-4 transform select-none text-lg font-bold tracking-tight transition duration-150 ease-out">
+    <header className="sticky top-0 z-50 font-truculenta">
+      <div
+        className={`border-b bg-white transition-shadow duration-300 ${
+          scrolled
+            ? "border-transparent shadow-[0_6px_24px_-12px_rgba(6,78,59,0.28)]"
+            : "border-[#BAC590]/40"
+        }`}
+      >
+        <Container size="custom" className="max-w-8xl py-0">
+          <div className="flex h-16 items-center justify-between gap-6 lg:h-20">
             <Link
               href="/"
-              passHref
-              className="flex items-center gap-1 whitespace-nowrap tracking-[.002em]"
+              className="-m-1 shrink-0 rounded-lg p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800"
             >
               <Image
-                className="relative z-20 h-8 w-auto max-w-xs md:h-10 lg:h-12 lg:max-w-none"
+                className="h-8 w-auto md:h-10 lg:h-11"
                 alt={data.logo.alt}
                 src={data.logo.src}
                 width={160}
                 height={40}
+                priority
               />
             </Link>
+
+            <nav aria-label="Hlavní menu" className="hidden md:block">
+              <ul className="flex items-center gap-3 lg:gap-6">
+                {items.map((item, i) => (
+                  <li key={`${item.label}-${i}`}>
+                    <Link
+                      href={item.url}
+                      aria-current={item.active ? "page" : undefined}
+                      className={`group relative isolate block whitespace-nowrap px-3 py-1.5 text-lg tracking-[0.02em] transition-colors duration-200 focus-visible:rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-800 lg:px-4 lg:text-xl ${
+                        item.active
+                          ? "text-green-900"
+                          : "text-green-800/75 hover:text-green-900"
+                      }`}
+                    >
+                      <Blob
+                        index={i}
+                        className={
+                          item.active
+                            ? "scale-100 opacity-100"
+                            : "rotate-[-3deg] scale-75 opacity-0 group-hover:scale-90 group-hover:opacity-70"
+                        }
+                      />
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <button
+              type="button"
+              className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full text-green-800 transition-colors hover:bg-[#BAC590]/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800 md:hidden"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              onClick={() => setOpen((o) => !o)}
+            >
+              <span className="sr-only">
+                {open ? "Zavřít menu" : "Otevřít menu"}
+              </span>
+              <MenuIcon open={open} />
+            </button>
           </div>
-          <Disclosure as="nav">
-            {({ open, close }) => (
-              <RouterChangeComplete callback={close}>
-                <div className="mx-auto">
-                  <div className="relative flex h-16 items-center justify-between">
-                    <div className="absolute inset-y-0 right-0 flex items-center md:hidden">
-                      {/* Mobile menu button*/}
-                      <Disclosure.Button className="relative z-50 inline-flex items-center justify-center p-2 text-[#BAC590] focus:outline-none">
-                        <span className="sr-only">Otevřít hlavní menu</span>
-                        <Transition
-                          className="absolute transition-transform hover:scale-110"
-                          show={open}
-                          enter="transition duration-200 ease-out"
-                          enterFrom="transform -rotate-45 opacity-0"
-                          enterTo="transform rotate-0 opacity-100"
-                          leave="transition duration-200 ease-out"
-                          leaveFrom="transform rotate-0 opacity-100"
-                          leaveTo="transform -rotate-45 opacity-0"
-                        >
-                          <BiX className="block h-8 w-8" aria-hidden="true" />
-                        </Transition>
-                        <Transition
-                          className="absolute transition-transform hover:scale-110"
-                          show={!open}
-                          enter="transition duration-200 ease-out"
-                          enterFrom="transform rotate-45 opacity-0"
-                          enterTo="transform rotate-0 opacity-100"
-                          leave="transition duration-200 ease-out"
-                          leaveFrom="transform rotate-0 opacity-100"
-                          leaveTo="transform rotate-45 opacity-0"
-                        >
-                          <BiMenu
-                            className="block h-7 w-7"
-                            aria-hidden="true"
-                          />
-                        </Transition>
-                      </Disclosure.Button>
-                    </div>
-                    <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
-                      <div className="hidden md:ml-6 md:block">
-                        <div className="flex space-x-4">
-                          <ul className="-mx-4 flex gap-2 tracking-[.002em] md:gap-3 md:gap-6 lg:gap-8">
-                            {data.nav?.map((item, i) => {
-                              const activeItem =
-                                item.href === ""
-                                  ? ["/", "/home"].includes(router.asPath)
-                                  : router.asPath.includes(item.href);
-                              return (
-                                <li
-                                  key={`${item.label}-${i}`}
-                                  className={`${
-                                    activeItem
-                                      ? activeItemClasses[theme.color]
-                                      : ""
-                                  }`}
-                                >
-                                  <Link
-                                    href={`${prefix}/${item.href}`}
-                                    passHref
-                                    className={`font-medium relative inline-block select-none	whitespace-nowrap py-4 px-2 text-sm tracking-wide transition duration-150 ease-out hover:opacity-100 lg:py-6 lg:px-4 md:text-lg ${
-                                      activeItem ? `` : `opacity-70`
-                                    }`}
-                                    aria-current={
-                                      activeItem ? "page" : undefined
-                                    }
-                                  >
-                                    {item.label}
-                                    {activeItem && (
-                                      <svg
-                                        className={`absolute bottom-0 left-1/2 -z-1 h-full w-[180%] -translate-x-1/2 opacity-10 dark:opacity-15 ${
-                                          activeBackgroundClasses[theme.color]
-                                        }`}
-                                        preserveAspectRatio="none"
-                                        viewBox="0 0 230 230"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <rect
-                                          x="230"
-                                          y="230"
-                                          width="230"
-                                          height="230"
-                                          transform="rotate(-180 230 230)"
-                                          fill="url(#paint0_radial_1_33)"
-                                        />
-                                        <defs>
-                                          <radialGradient
-                                            id="paint0_radial_1_33"
-                                            cx="0"
-                                            cy="0"
-                                            r="1"
-                                            gradientUnits="userSpaceOnUse"
-                                            gradientTransform="translate(345 230) rotate(90) scale(230 115)"
-                                          >
-                                            <stop stopColor="currentColor" />
-                                            <stop
-                                              offset="1"
-                                              stopColor="currentColor"
-                                              stopOpacity="0"
-                                            />
-                                          </radialGradient>
-                                        </defs>
-                                      </svg>
-                                    )}
-                                  </Link>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <Transition
-                  className="absolute top-16 left-0 z-40 w-full shadow-md md:hidden"
-                  enter="transition duration-100 ease-out"
-                  enterFrom="transform -translate-y-1/4 opacity-0"
-                  enterTo="transform translate-y-0 opacity-100"
-                  leave="transition duration-100 ease-out"
-                  leaveFrom="transform scale-y-100 opacity-100"
-                  leaveTo="transform scale-y-70 opacity-0"
-                >
-                  <Disclosure.Panel>
-                    <div className="space-y-1 bg-white bg-opacity-90 px-6 pt-2 pb-3 backdrop-blur-xl">
-                      <ul className="-mx-4 flex flex-col gap-2 tracking-[.002em] md:gap-3 md:gap-6 lg:gap-8">
-                        {data.nav?.map((item, i) => {
-                          const activeItem =
-                            item.href === ""
-                              ? ["/", "/home"].includes(router.asPath)
-                              : router.asPath.includes(item.href);
-                          return (
-                            <li
-                              key={`${item.label}-${i}`}
-                              className={`flex justify-center ${
-                                activeItem ? activeItemClasses[theme.color] : ""
-                              }`}
-                            >
-                              <Link
-                                href={`${prefix}/${item.href}`}
-                                passHref
-                                className={`relative inline-block w-full select-none whitespace-nowrap py-4	px-2 text-center font-medium text-lg tracking-wide transition duration-150 ease-out hover:opacity-100  focus:bg-yellow-500 focus:bg-opacity-50 active:bg-yellow-500 active:bg-opacity-70 md:py-6 md:px-4 md:text-base ${
-                                  activeItem ? `` : `opacity-70`
-                                }`}
-                                tabIndex={0}
-                                aria-current={activeItem ? "page" : undefined}
-                              >
-                                {item.label}
-                                {activeItem && (
-                                  <svg
-                                    className={`absolute bottom-0 left-1/2 -z-1 h-full w-[180%] -translate-x-1/2 opacity-10 dark:opacity-15 ${
-                                      activeBackgroundClasses[theme.color]
-                                    }`}
-                                    preserveAspectRatio="none"
-                                    viewBox="0 0 230 230"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <rect
-                                      x="230"
-                                      y="230"
-                                      width="230"
-                                      height="230"
-                                      transform="rotate(-180 230 230)"
-                                      fill="url(#paint0_radial_1_33)"
-                                    />
-                                    <defs>
-                                      <radialGradient
-                                        id="paint0_radial_1_33"
-                                        cx="0"
-                                        cy="0"
-                                        r="1"
-                                        gradientUnits="userSpaceOnUse"
-                                        gradientTransform="translate(345 230) rotate(90) scale(230 115)"
-                                      >
-                                        <stop stopColor="currentColor" />
-                                        <stop
-                                          offset="1"
-                                          stopColor="currentColor"
-                                          stopOpacity="0"
-                                        />
-                                      </radialGradient>
-                                    </defs>
-                                  </svg>
-                                )}
-                              </Link>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  </Disclosure.Panel>
-                </Transition>
-              </RouterChangeComplete>
-            )}
-          </Disclosure>
-        </div>
-      </Container>
-    </div>
+        </Container>
+      </div>
+
+      <div
+        id="mobile-menu"
+        hidden={!open}
+        className="absolute inset-x-0 top-full border-b border-[#BAC590]/40 bg-white shadow-[0_16px_32px_-16px_rgba(6,78,59,0.3)] md:hidden"
+      >
+        <ul className="flex flex-col items-start gap-1 px-6 py-4">
+          {items.map((item, i) => (
+            <li key={`${item.label}-${i}`}>
+              <Link
+                href={item.url}
+                aria-current={item.active ? "page" : undefined}
+                className={`relative isolate inline-block px-4 py-2.5 text-2xl tracking-[0.02em] focus-visible:rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800 ${
+                  item.active ? "text-green-900" : "text-green-800/75"
+                }`}
+              >
+                {item.active && (
+                  <Blob index={i} className="scale-100 opacity-100" />
+                )}
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </header>
   );
 };
