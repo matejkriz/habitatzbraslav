@@ -1,305 +1,156 @@
 import React from "react";
 import Link from "next/link";
-import { Disclosure, Transition } from "@headlessui/react";
-import { BiMenu, BiX } from "react-icons/bi";
-import { useRouter } from "next/router";
-import { Container } from "../util/container";
-import { useTheme } from ".";
 import Image from "next/image";
+import {
+  MenuIcon,
+  useEscape,
+  useIndicator,
+  useNavItems,
+  usePendingIndex,
+  useRouteChange,
+  useScrolled,
+} from "./nav-shared";
 
-const RouterChangeComplete = ({ callback, children }) => {
-  const router = useRouter();
+const GLASS =
+  "bg-white/75 backdrop-blur-xl backdrop-saturate-150 ring-1 ring-[#064E3B]/[0.07]";
+const EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]";
 
-  React.useEffect(() => {
-    const handleRouteChange = () => {
-      callback();
-    };
-    router.events.on("routeChangeComplete", handleRouteChange);
-    return () => {
-      router.events.off("routeChangeComplete", handleRouteChange);
-    };
-  }, []);
-
-  return children;
-};
-
+/**
+ * Varianta 6 – Mléčné sklo.
+ * A rounded glass bar floats over the page with a little air around it. The
+ * current page is a solid sun-yellow pill; a pale sage pill follows the
+ * pointer, so the bar feels alive under the hand.
+ */
 export const Header = ({ data }) => {
-  const router = useRouter();
-  const theme = useTheme();
-
-  const headerColor = {
-    default: "text-green-900 dark:text-white bg-white dark:bg-yellow-800",
-    primary: {
-      blue: "text-white from-blue-300 to-blue-500",
-      teal: "text-white from-teal-400 to-teal-500",
-      green: "text-white from-green-400 to-green-500",
-      red: "text-white from-red-400 to-red-500",
-      pink: "text-white from-pink-400 to-pink-500",
-      purple: "text-white from-purple-400 to-purple-500",
-      orange: "text-white from-orange-400 to-orange-500",
-      yellow: "text-white from-yellow-400 to-yellow-500",
-    },
-  };
-
-  const headerColorCss =
-    data.color === "primary"
-      ? headerColor.primary[theme.color]
-      : headerColor.default;
-
-  const activeItemClasses = {
-    blue: "border-b-3 border-blue-200 text-blue-700 dark:text-blue-300 font-medium dark:border-blue-700",
-    teal: "border-b-3 border-teal-200 text-teal-700 dark:text-teal-300 font-medium dark:border-teal-700",
-    green:
-      "border-b-3 border-green-200 text-green-700 dark:text-green-300 font-medium dark:border-green-700",
-    red: "border-b-3 border-red-300 text-red-700 dark:text-green-300 font-medium dark:border-red-700",
-    pink: "border-b-3 border-pink-200 text-pink-700 dark:text-pink-300 font-medium dark:border-pink-700",
-    purple:
-      "border-b-3 border-purple-200 text-purple-700 dark:text-purple-300 font-medium dark:border-purple-700",
-    orange:
-      "border-b-3 border-orange-200 text-orange-700 dark:text-orange-300 font-medium dark:border-orange-700",
-    yellow:
-      "border-b-3 border-yellow-300 text-yellow-700 dark:text-yellow-300 font-medium dark:border-yellow-600",
-  };
-
-  const activeBackgroundClasses = {
-    blue: "text-blue-500",
-    teal: "text-teal-500",
-    green: "text-green-500",
-    red: "text-red-500",
-    pink: "text-pink-500",
-    purple: "text-purple-500",
-    orange: "text-orange-500",
-    yellow: "text-yellow-500",
-  };
-
-  // If we're on an admin path, other links should also link to their admin paths
-  const [prefix, setPrefix] = React.useState("");
-
-  React.useEffect(() => {
-    if (window && window.location.pathname.startsWith("/admin")) {
-      setPrefix("/admin");
-    }
-  }, []);
+  const items = useNavItems(data.nav);
+  const { current, setPending } = usePendingIndex(items);
+  const listRef = React.useRef<HTMLUListElement>(null);
+  const [hover, setHover] = React.useState<number | null>(null);
+  const active = useIndicator(current, listRef);
+  const ghost = useIndicator(hover ?? -1, listRef);
+  const scrolled = useScrolled();
+  const [open, setOpen] = React.useState(false);
+  const close = React.useCallback(() => setOpen(false), []);
+  useRouteChange(close);
+  useEscape(open, close);
 
   return (
-    <div
-      className={`sticky top-0 z-50 font-truculenta shadow-md ${headerColorCss}`}
-    >
-      <Container size="custom" className={`relative z-20 max-w-8xl py-0`}>
-        <div className="flex items-center justify-between gap-6">
-          <div className="my-4 transform select-none text-lg font-bold tracking-tight transition duration-150 ease-out">
-            <Link
-              href="/"
-              passHref
-              className="flex items-center gap-1 whitespace-nowrap tracking-[.002em]"
+    <header className="pointer-events-none sticky top-0 z-50 px-3 pt-3 font-truculenta sm:px-5 sm:pt-4">
+      <div className="pointer-events-auto relative mx-auto max-w-8xl">
+        <div
+          className={`flex h-16 items-center justify-between gap-6 rounded-full pl-5 pr-2 transition-shadow duration-500 sm:pl-6 lg:h-[4.5rem] ${GLASS} ${
+            scrolled
+              ? "shadow-[0_14px_34px_-14px_rgba(6,78,59,0.35),0_2px_6px_-2px_rgba(6,78,59,0.08)]"
+              : "shadow-[0_6px_20px_-12px_rgba(6,78,59,0.22)]"
+          }`}
+        >
+          <Link
+            href="/"
+            className="-m-1 shrink-0 rounded-full p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800"
+          >
+            <Image
+              className="h-7 w-auto md:h-9 lg:h-10"
+              alt={data.logo.alt}
+              src={data.logo.src}
+              width={160}
+              height={40}
+              priority
+            />
+          </Link>
+
+          <nav aria-label="Hlavní menu" className="hidden md:block">
+            <ul
+              ref={listRef}
+              className="relative flex items-center gap-1"
+              onMouseLeave={() => setHover(null)}
             >
-              <Image
-                className="relative z-20 h-8 w-auto max-w-xs md:h-10 lg:h-12 lg:max-w-none"
-                alt={data.logo.alt}
-                src={data.logo.src}
-                width={160}
-                height={40}
-              />
-            </Link>
-          </div>
-          <Disclosure as="nav">
-            {({ open, close }) => (
-              <RouterChangeComplete callback={close}>
-                <div className="mx-auto">
-                  <div className="relative flex h-16 items-center justify-between">
-                    <div className="absolute inset-y-0 right-0 flex items-center md:hidden">
-                      {/* Mobile menu button*/}
-                      <Disclosure.Button className="relative z-50 inline-flex items-center justify-center p-2 text-[#BAC590] focus:outline-none">
-                        <span className="sr-only">Otevřít hlavní menu</span>
-                        <Transition
-                          className="absolute transition-transform hover:scale-110"
-                          show={open}
-                          enter="transition duration-200 ease-out"
-                          enterFrom="transform -rotate-45 opacity-0"
-                          enterTo="transform rotate-0 opacity-100"
-                          leave="transition duration-200 ease-out"
-                          leaveFrom="transform rotate-0 opacity-100"
-                          leaveTo="transform -rotate-45 opacity-0"
-                        >
-                          <BiX className="block h-8 w-8" aria-hidden="true" />
-                        </Transition>
-                        <Transition
-                          className="absolute transition-transform hover:scale-110"
-                          show={!open}
-                          enter="transition duration-200 ease-out"
-                          enterFrom="transform rotate-45 opacity-0"
-                          enterTo="transform rotate-0 opacity-100"
-                          leave="transition duration-200 ease-out"
-                          leaveFrom="transform rotate-0 opacity-100"
-                          leaveTo="transform rotate-45 opacity-0"
-                        >
-                          <BiMenu
-                            className="block h-7 w-7"
-                            aria-hidden="true"
-                          />
-                        </Transition>
-                      </Disclosure.Button>
-                    </div>
-                    <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
-                      <div className="hidden md:ml-6 md:block">
-                        <div className="flex space-x-4">
-                          <ul className="-mx-4 flex gap-2 tracking-[.002em] md:gap-3 md:gap-6 lg:gap-8">
-                            {data.nav?.map((item, i) => {
-                              const activeItem =
-                                item.href === ""
-                                  ? ["/", "/home"].includes(router.asPath)
-                                  : router.asPath.includes(item.href);
-                              return (
-                                <li
-                                  key={`${item.label}-${i}`}
-                                  className={`${
-                                    activeItem
-                                      ? activeItemClasses[theme.color]
-                                      : ""
-                                  }`}
-                                >
-                                  <Link
-                                    href={`${prefix}/${item.href}`}
-                                    passHref
-                                    className={`font-medium relative inline-block select-none	whitespace-nowrap py-4 px-2 text-sm tracking-wide transition duration-150 ease-out hover:opacity-100 lg:py-6 lg:px-4 md:text-lg ${
-                                      activeItem ? `` : `opacity-70`
-                                    }`}
-                                    aria-current={
-                                      activeItem ? "page" : undefined
-                                    }
-                                  >
-                                    {item.label}
-                                    {activeItem && (
-                                      <svg
-                                        className={`absolute bottom-0 left-1/2 -z-1 h-full w-[180%] -translate-x-1/2 opacity-10 dark:opacity-15 ${
-                                          activeBackgroundClasses[theme.color]
-                                        }`}
-                                        preserveAspectRatio="none"
-                                        viewBox="0 0 230 230"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <rect
-                                          x="230"
-                                          y="230"
-                                          width="230"
-                                          height="230"
-                                          transform="rotate(-180 230 230)"
-                                          fill="url(#paint0_radial_1_33)"
-                                        />
-                                        <defs>
-                                          <radialGradient
-                                            id="paint0_radial_1_33"
-                                            cx="0"
-                                            cy="0"
-                                            r="1"
-                                            gradientUnits="userSpaceOnUse"
-                                            gradientTransform="translate(345 230) rotate(90) scale(230 115)"
-                                          >
-                                            <stop stopColor="currentColor" />
-                                            <stop
-                                              offset="1"
-                                              stopColor="currentColor"
-                                              stopOpacity="0"
-                                            />
-                                          </radialGradient>
-                                        </defs>
-                                      </svg>
-                                    )}
-                                  </Link>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <Transition
-                  className="absolute top-16 left-0 z-40 w-full shadow-md md:hidden"
-                  enter="transition duration-100 ease-out"
-                  enterFrom="transform -translate-y-1/4 opacity-0"
-                  enterTo="transform translate-y-0 opacity-100"
-                  leave="transition duration-100 ease-out"
-                  leaveFrom="transform scale-y-100 opacity-100"
-                  leaveTo="transform scale-y-70 opacity-0"
-                >
-                  <Disclosure.Panel>
-                    <div className="space-y-1 bg-white bg-opacity-90 px-6 pt-2 pb-3 backdrop-blur-xl">
-                      <ul className="-mx-4 flex flex-col gap-2 tracking-[.002em] md:gap-3 md:gap-6 lg:gap-8">
-                        {data.nav?.map((item, i) => {
-                          const activeItem =
-                            item.href === ""
-                              ? ["/", "/home"].includes(router.asPath)
-                              : router.asPath.includes(item.href);
-                          return (
-                            <li
-                              key={`${item.label}-${i}`}
-                              className={`flex justify-center ${
-                                activeItem ? activeItemClasses[theme.color] : ""
-                              }`}
-                            >
-                              <Link
-                                href={`${prefix}/${item.href}`}
-                                passHref
-                                className={`relative inline-block w-full select-none whitespace-nowrap py-4	px-2 text-center font-medium text-lg tracking-wide transition duration-150 ease-out hover:opacity-100  focus:bg-yellow-500 focus:bg-opacity-50 active:bg-yellow-500 active:bg-opacity-70 md:py-6 md:px-4 md:text-base ${
-                                  activeItem ? `` : `opacity-70`
-                                }`}
-                                tabIndex={0}
-                                aria-current={activeItem ? "page" : undefined}
-                              >
-                                {item.label}
-                                {activeItem && (
-                                  <svg
-                                    className={`absolute bottom-0 left-1/2 -z-1 h-full w-[180%] -translate-x-1/2 opacity-10 dark:opacity-15 ${
-                                      activeBackgroundClasses[theme.color]
-                                    }`}
-                                    preserveAspectRatio="none"
-                                    viewBox="0 0 230 230"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <rect
-                                      x="230"
-                                      y="230"
-                                      width="230"
-                                      height="230"
-                                      transform="rotate(-180 230 230)"
-                                      fill="url(#paint0_radial_1_33)"
-                                    />
-                                    <defs>
-                                      <radialGradient
-                                        id="paint0_radial_1_33"
-                                        cx="0"
-                                        cy="0"
-                                        r="1"
-                                        gradientUnits="userSpaceOnUse"
-                                        gradientTransform="translate(345 230) rotate(90) scale(230 115)"
-                                      >
-                                        <stop stopColor="currentColor" />
-                                        <stop
-                                          offset="1"
-                                          stopColor="currentColor"
-                                          stopOpacity="0"
-                                        />
-                                      </radialGradient>
-                                    </defs>
-                                  </svg>
-                                )}
-                              </Link>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  </Disclosure.Panel>
-                </Transition>
-              </RouterChangeComplete>
-            )}
-          </Disclosure>
+              {ghost.rect && hover !== current && (
+                <span
+                  aria-hidden="true"
+                  className={`absolute rounded-full bg-[#BAC590]/25 transition-all duration-300 ${EASE} motion-reduce:transition-none`}
+                  style={{
+                    left: ghost.rect.left,
+                    top: ghost.rect.top,
+                    width: ghost.rect.width,
+                    height: ghost.rect.height,
+                  }}
+                />
+              )}
+              {active.rect && (
+                <span
+                  aria-hidden="true"
+                  className={`absolute rounded-full bg-[#EFC800] shadow-[0_6px_16px_-6px_rgba(201,160,0,0.7),inset_0_1px_0_rgba(255,255,255,0.45)] ${
+                    active.ready
+                      ? `transition-all duration-500 ${EASE} motion-reduce:transition-none`
+                      : ""
+                  }`}
+                  style={{
+                    left: active.rect.left,
+                    top: active.rect.top,
+                    width: active.rect.width,
+                    height: active.rect.height,
+                  }}
+                />
+              )}
+              {items.map((item, i) => (
+                <li key={`${item.label}-${i}`} className="relative">
+                  <Link
+                    href={item.url}
+                    data-nav-link
+                    onClick={() => setPending(i)}
+                    onMouseEnter={() => setHover(i)}
+                    aria-current={item.active ? "page" : undefined}
+                    className={`relative block whitespace-nowrap rounded-full px-4 py-2 text-lg tracking-[0.02em] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800 lg:px-5 lg:text-xl ${
+                      i === current
+                        ? `text-[#063B2D] ${active.rect ? "" : "bg-[#EFC800]"}`
+                        : "text-green-800/80 hover:text-green-900"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <button
+            type="button"
+            className="inline-flex h-12 w-12 items-center justify-center rounded-full text-green-800 transition-colors hover:bg-[#BAC590]/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800 md:hidden"
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            onClick={() => setOpen((o) => !o)}
+          >
+            <span className="sr-only">
+              {open ? "Zavřít menu" : "Otevřít menu"}
+            </span>
+            <MenuIcon open={open} />
+          </button>
         </div>
-      </Container>
-    </div>
+
+        <div
+          id="mobile-menu"
+          hidden={!open}
+          className="absolute inset-x-0 top-full mt-2 rounded-[1.75rem] bg-white/95 p-2 shadow-[0_20px_40px_-16px_rgba(6,78,59,0.35)] ring-1 ring-[#064E3B]/[0.07] backdrop-blur-xl md:hidden"
+        >
+          <ul className="flex flex-col gap-1">
+            {items.map((item, i) => (
+              <li key={`${item.label}-${i}`}>
+                <Link
+                  href={item.url}
+                  aria-current={item.active ? "page" : undefined}
+                  className={`block rounded-full px-5 py-3 text-xl tracking-[0.02em] focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800 ${
+                    item.active
+                      ? "bg-[#EFC800] text-[#063B2D]"
+                      : "text-green-800/80 active:bg-[#BAC590]/25"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </header>
   );
 };
