@@ -10,7 +10,12 @@ import {
   TbPlant2,
   TbUsers,
 } from "react-icons/tb";
-import { useNavItems, usePendingIndex, useScrolled } from "./nav-shared";
+import {
+  useNavItems,
+  usePendingIndex,
+  useScrollProgress,
+  useScrolled,
+} from "./nav-shared";
 
 const EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]";
 const GLASS =
@@ -30,12 +35,18 @@ const WIDE_BLOBS = [
 // Pebble shapes for the mobile tabs: narrower over the icon, fuller under the
 // label, so the wobble never eats into the room around the content.
 const TAB_BLOBS = [
-  "M30 6C46 0 63 3 77 9C90 15 94 30 95 46C96 62 99 76 92 87C84 97 64 95 48 95C34 95 23 96 16 90C9 84 10 70 10 56C10 40 14 13 30 6Z",
+  "M27 6C43 0 60 3 74 9C87 15 91 30 92 46C93 62 96 76 89 87C81 97 61 95 45 95C31 95 20 96 13 90C6 84 7 70 7 56C7 40 11 13 27 6Z",
   "M20 10C32 2 50 5 66 4C84 3 94 16 93 34C92 50 99 66 98 80C97 94 80 98 60 97C42 96 22 99 9 92C-1 86 2 70 3 56C4 40 8 18 20 10Z",
   "M10 18C16 6 32 4 50 4C68 4 86 3 92 16C97 28 94 46 95 62C96 78 93 92 78 95C60 98 40 95 22 96C10 97 5 88 5 72C5 54 5 30 10 18Z",
   "M24 4C40 0 58 6 74 8C90 10 96 24 94 40C92 56 99 72 95 86C91 98 70 96 50 97C32 98 12 98 5 86C-2 74 5 58 5 42C5 24 8 8 24 4Z",
-  "M16 14C26 2 46 6 62 4C80 2 92 12 92 30C92 46 98 60 97 76C96 92 84 99 64 96C46 93 26 99 12 94C0 89 2 72 4 56C6 40 6 26 16 14Z",
+  "M19 14C29 2 47 6 63 4C80 2 92 12 92 30C92 46 96 60 95 76C94 90 82 97 64 96C47 93 29 99 15 94C4 89 5 72 7 56C9 40 9 26 19 14Z",
 ];
+
+// Mobile logo island: over the first 96px of scroll it scales down by 13%
+// (logo included) and moves 4px up, so it covers less of the page. A
+// transform keeps the page layout still while it shrinks.
+const MOBILE_SHRINK =
+  "max-md:origin-top max-md:[transform:translateY(calc(-4px*var(--scroll-progress,0)))_scale(calc(1_-_0.13*var(--scroll-progress,0)))] max-md:transition-[background-color,box-shadow]";
 
 const BLOB_MOTION = `transition duration-500 ${EASE} motion-reduce:transition-none`;
 
@@ -55,24 +66,22 @@ const SHORT_LABELS: Record<string, string> = { about: "Principy" };
  * pill once you scroll. The current page sits on a hand-cut blob in one of
  * the logo tints, each page its own colour and shape; hover lets it peek.
  * Mobile: the logo sits plainly at the top and turns into a near-solid
- * island once you scroll; navigation lives in a floating tab bar at the
- * bottom, where the current tab sits on its own coloured blob.
+ * island once you scroll, shrinking slightly as you go; navigation lives
+ * in a floating tab bar at the bottom, where the current tab sits on its own
+ * coloured blob.
  */
 export const Header = ({ data }) => {
   const items = useNavItems(data.nav);
   const { current, setPending } = usePendingIndex(items);
   const scrolled = useScrolled(24);
+  const islandRef = useScrollProgress<HTMLDivElement>(96);
 
   return (
     <>
-      <style>{`
-        @media (max-width: 899.98px) {
-          body { padding-bottom: calc(7rem + env(safe-area-inset-bottom)); }
-        }
-      `}</style>
       <header className="pointer-events-none sticky top-0 z-50 px-3 pt-3 font-truculenta sm:px-5 sm:pt-4">
         <div
-          className={`pointer-events-auto mx-auto flex items-center justify-between gap-6 rounded-full transition-all duration-700 ${EASE} motion-reduce:transition-none max-md:h-14 max-md:w-fit max-md:px-5 ${
+          ref={islandRef}
+          className={`pointer-events-auto mx-auto flex items-center justify-between gap-6 rounded-full transition-all duration-700 ${EASE} motion-reduce:transition-none max-md:h-14 max-md:w-fit max-md:px-5 ${MOBILE_SHRINK} ${
             scrolled
               ? `h-16 max-w-[60rem] pl-6 pr-5 ${GLASS} max-md:bg-white/[0.94] max-md:shadow-[0_8px_22px_-12px_rgba(6,78,59,0.32)] max-md:ring-[#064E3B]/[0.06]`
               : "h-16 max-w-8xl bg-white/0 pl-3 pr-0 ring-0 lg:h-20"
@@ -139,7 +148,7 @@ export const Header = ({ data }) => {
         aria-label="Hlavní menu"
         className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-50 font-truculenta md:hidden"
       >
-        <ul className="mx-auto flex max-w-md items-stretch rounded-[2.25rem] bg-white/[0.94] p-1.5 shadow-[0_14px_34px_-14px_rgba(6,78,59,0.35),0_2px_6px_-2px_rgba(6,78,59,0.08)] ring-1 ring-[#064E3B]/[0.07] backdrop-blur-xl backdrop-saturate-150">
+        <ul className="mx-auto flex max-w-md items-stretch rounded-[2.25rem] bg-white/[0.94] py-1.5 px-2.5 shadow-[0_14px_34px_-14px_rgba(6,78,59,0.35),0_2px_6px_-2px_rgba(6,78,59,0.08)] ring-1 ring-[#064E3B]/[0.07] backdrop-blur-xl backdrop-saturate-150">
           {items.map((item, i) => {
             const Icon = ICONS[item.href] ?? TbLeaf;
             const on = i === current;
@@ -150,7 +159,7 @@ export const Header = ({ data }) => {
                   onClick={() => setPending(i)}
                   aria-current={item.active ? "page" : undefined}
                   aria-label={item.label}
-                  className={`group relative isolate flex w-full flex-col items-center justify-center gap-0.5 px-3 pt-3 pb-2.5 text-[0.8125rem] leading-tight tracking-[0.02em] transition-colors duration-200 focus-visible:rounded-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800 ${
+                  className={`group relative isolate flex w-full flex-col items-center justify-center gap-0.5 px-2.5 pt-2.5 pb-2 text-[0.8125rem] leading-tight tracking-[0.02em] max-[359.98px]:tracking-normal min-[360px]:px-3 transition-colors duration-200 focus-visible:rounded-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800 ${
                     on ? "text-green-900" : "text-green-800/75"
                   }`}
                 >
@@ -172,7 +181,7 @@ export const Header = ({ data }) => {
                   </svg>
                   <Icon
                     aria-hidden="true"
-                    className="h-6 w-6"
+                    className="h-5 w-5"
                     strokeWidth={1.75}
                   />
                   <span className="whitespace-nowrap">

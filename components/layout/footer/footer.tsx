@@ -42,7 +42,11 @@ export const Footer = ({ data, logo }) => {
       : footerColor.default;
 
   return (
-    <footer className={`bg-gradient-to-br ${footerColorCss}`}>
+    // On phones the floating tab bar from the header covers the bottom of the
+    // page; the footer's own colour extends underneath it.
+    <footer
+      className={`bg-gradient-to-br max-md:pb-[calc(6.5rem_+_env(safe-area-inset-bottom))] ${footerColorCss}`}
+    >
       <Container className="relative" size="small">
         <div className="flex flex-wrap items-center justify-between gap-6">
           <Link
