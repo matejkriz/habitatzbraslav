@@ -80,7 +80,7 @@ export const Header = ({ data }) => {
     <>
       <style>{`
         @media (max-width: 899.98px) {
-          body { padding-bottom: calc(7rem + env(safe-area-inset-bottom)); }
+          body { padding-bottom: calc(6.5rem + env(safe-area-inset-bottom)); }
         }
       `}</style>
       <header className="pointer-events-none sticky top-0 z-50 px-3 pt-3 font-truculenta sm:px-5 sm:pt-4">
@@ -164,7 +164,7 @@ export const Header = ({ data }) => {
                   onClick={() => setPending(i)}
                   aria-current={item.active ? "page" : undefined}
                   aria-label={item.label}
-                  className={`group relative isolate flex w-full flex-col items-center justify-center gap-0.5 px-3 pt-3 pb-2.5 text-[0.8125rem] leading-tight tracking-[0.02em] transition-colors duration-200 focus-visible:rounded-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800 ${
+                  className={`group relative isolate flex w-full flex-col items-center justify-center gap-0.5 px-3 pt-2.5 pb-2 text-[0.8125rem] leading-tight tracking-[0.02em] transition-colors duration-200 focus-visible:rounded-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800 ${
                     on ? "text-green-900" : "text-green-800/75"
                   }`}
                 >
@@ -186,7 +186,7 @@ export const Header = ({ data }) => {
                   </svg>
                   <Icon
                     aria-hidden="true"
-                    className="h-6 w-6"
+                    className="h-5 w-5"
                     strokeWidth={1.75}
                   />
                   <span className="whitespace-nowrap">
