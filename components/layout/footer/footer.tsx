@@ -45,14 +45,16 @@ export const Footer = ({ data, logo }) => {
     // On phones the floating tab bar from the header covers the bottom of the
     // page; the footer's own colour extends underneath it.
     <footer
-      className={`bg-gradient-to-br max-md:pb-[calc(6.5rem_+_env(safe-area-inset-bottom))] ${footerColorCss}`}
+      className={`bg-gradient-to-br max-md:pb-[calc(5rem_+_max(0.75rem,env(safe-area-inset-bottom)))] ${footerColorCss}`}
     >
-      <Container className="relative" size="small">
+      {/* On phones the header already shows the logo, so the footer keeps only
+          the social links with just the room they need. */}
+      <Container className="relative max-md:py-4" size="small">
         <div className="flex flex-wrap items-center justify-between gap-6">
           <Link
             href="/"
             passHref
-            className="group mx-2 flex items-center whitespace-nowrap font-bold tracking-tight text-gray-400 opacity-50 transition duration-150 ease-out hover:opacity-100 dark:text-gray-300"
+            className="group mx-2 flex items-center max-md:hidden whitespace-nowrap font-bold tracking-tight text-gray-400 opacity-50 transition duration-150 ease-out hover:opacity-100 dark:text-gray-300"
           >
             <Image
               className="relative z-10 h-auto w-full max-w-xs rounded-lg lg:max-w-none"
