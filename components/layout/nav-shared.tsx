@@ -61,6 +61,40 @@ export const useScrolled = (threshold = 8) => {
 };
 
 /**
+ * Writes how far the page has scrolled, from 0 at the top to 1 after
+ * `distance` px, into the `--scroll-progress` CSS variable on the element.
+ * Runs once per frame and skips React renders, so styles can follow the
+ * scroll smoothly.
+ */
+export const useScrollProgress = <T extends HTMLElement>(distance = 96) => {
+  const ref = React.useRef<T>(null);
+
+  React.useEffect(() => {
+    let frame = 0;
+    let last = -1;
+    const update = () => {
+      frame = 0;
+      const progress = Math.min(Math.max(window.scrollY / distance, 0), 1);
+      const rounded = Math.round(progress * 1000) / 1000;
+      if (rounded === last || !ref.current) return;
+      last = rounded;
+      ref.current.style.setProperty("--scroll-progress", String(rounded));
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [distance]);
+
+  return ref;
+};
+
+/**
  * Measures the link at `index` inside the list so one indicator element can
  * slide between items. `ready` turns true after the first measurement; until
  * then the active link should style itself, so the server render is correct.
