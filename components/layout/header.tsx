@@ -54,7 +54,8 @@ const SHORT_LABELS: Record<string, string> = { about: "Principy" };
  * Desktop: an open, airy row at the top that gathers into a compact glass
  * pill once you scroll. The current page sits on a hand-cut blob in one of
  * the logo tints, each page its own colour and shape; hover lets it peek.
- * Mobile: a near-solid logo island on top and a floating tab bar at the
+ * Mobile: the logo sits plainly at the top and turns into a near-solid
+ * island once you scroll; navigation lives in a floating tab bar at the
  * bottom, where the current tab sits on its own coloured blob.
  */
 export const Header = ({ data }) => {
@@ -71,9 +72,9 @@ export const Header = ({ data }) => {
       `}</style>
       <header className="pointer-events-none sticky top-0 z-50 px-3 pt-3 font-truculenta sm:px-5 sm:pt-4">
         <div
-          className={`pointer-events-auto mx-auto flex items-center justify-between gap-6 rounded-full transition-all duration-700 ${EASE} motion-reduce:transition-none max-md:h-14 max-md:w-fit max-md:bg-white/[0.94] max-md:px-5 max-md:shadow-[0_8px_22px_-12px_rgba(6,78,59,0.32)] max-md:ring-1 max-md:ring-[#064E3B]/[0.06] max-md:backdrop-blur-xl ${
+          className={`pointer-events-auto mx-auto flex items-center justify-between gap-6 rounded-full transition-all duration-700 ${EASE} motion-reduce:transition-none max-md:h-14 max-md:w-fit max-md:px-5 ${
             scrolled
-              ? `h-16 max-w-[60rem] pl-6 pr-5 ${GLASS}`
+              ? `h-16 max-w-[60rem] pl-6 pr-5 ${GLASS} max-md:bg-white/[0.94] max-md:shadow-[0_8px_22px_-12px_rgba(6,78,59,0.32)] max-md:ring-[#064E3B]/[0.06]`
               : "h-16 max-w-8xl bg-white/0 pl-3 pr-0 ring-0 lg:h-20"
           }`}
         >
