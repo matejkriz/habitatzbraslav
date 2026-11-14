@@ -35,11 +35,11 @@ const WIDE_BLOBS = [
 // Pebble shapes for the mobile tabs: narrower over the icon, fuller under the
 // label, so the wobble never eats into the room around the content.
 const TAB_BLOBS = [
-  "M30 6C46 0 63 3 77 9C90 15 94 30 95 46C96 62 99 76 92 87C84 97 64 95 48 95C34 95 23 96 16 90C9 84 10 70 10 56C10 40 14 13 30 6Z",
+  "M27 6C43 0 60 3 74 9C87 15 91 30 92 46C93 62 96 76 89 87C81 97 61 95 45 95C31 95 20 96 13 90C6 84 7 70 7 56C7 40 11 13 27 6Z",
   "M20 10C32 2 50 5 66 4C84 3 94 16 93 34C92 50 99 66 98 80C97 94 80 98 60 97C42 96 22 99 9 92C-1 86 2 70 3 56C4 40 8 18 20 10Z",
   "M10 18C16 6 32 4 50 4C68 4 86 3 92 16C97 28 94 46 95 62C96 78 93 92 78 95C60 98 40 95 22 96C10 97 5 88 5 72C5 54 5 30 10 18Z",
   "M24 4C40 0 58 6 74 8C90 10 96 24 94 40C92 56 99 72 95 86C91 98 70 96 50 97C32 98 12 98 5 86C-2 74 5 58 5 42C5 24 8 8 24 4Z",
-  "M16 14C26 2 46 6 62 4C80 2 92 12 92 30C92 46 98 60 97 76C96 92 84 99 64 96C46 93 26 99 12 94C0 89 2 72 4 56C6 40 6 26 16 14Z",
+  "M16 14C26 2 46 6 62 4C80 2 92 12 92 30C92 46 96 60 95 76C94 90 82 97 64 96C46 93 26 99 12 94C0 89 2 72 4 56C6 40 6 26 16 14Z",
 ];
 
 // Mobile logo island: over the first 96px of scroll it scales down by 13%
@@ -78,11 +78,6 @@ export const Header = ({ data }) => {
 
   return (
     <>
-      <style>{`
-        @media (max-width: 899.98px) {
-          body { padding-bottom: calc(6.5rem + env(safe-area-inset-bottom)); }
-        }
-      `}</style>
       <header className="pointer-events-none sticky top-0 z-50 px-3 pt-3 font-truculenta sm:px-5 sm:pt-4">
         <div
           ref={islandRef}
@@ -153,7 +148,7 @@ export const Header = ({ data }) => {
         aria-label="Hlavní menu"
         className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-50 font-truculenta md:hidden"
       >
-        <ul className="mx-auto flex max-w-md items-stretch rounded-[2.25rem] bg-white/[0.94] p-1.5 shadow-[0_14px_34px_-14px_rgba(6,78,59,0.35),0_2px_6px_-2px_rgba(6,78,59,0.08)] ring-1 ring-[#064E3B]/[0.07] backdrop-blur-xl backdrop-saturate-150">
+        <ul className="mx-auto flex max-w-md items-stretch rounded-[2.25rem] bg-white/[0.94] py-1.5 px-2.5 shadow-[0_14px_34px_-14px_rgba(6,78,59,0.35),0_2px_6px_-2px_rgba(6,78,59,0.08)] ring-1 ring-[#064E3B]/[0.07] backdrop-blur-xl backdrop-saturate-150">
           {items.map((item, i) => {
             const Icon = ICONS[item.href] ?? TbLeaf;
             const on = i === current;
@@ -164,7 +159,7 @@ export const Header = ({ data }) => {
                   onClick={() => setPending(i)}
                   aria-current={item.active ? "page" : undefined}
                   aria-label={item.label}
-                  className={`group relative isolate flex w-full flex-col items-center justify-center gap-0.5 px-3 pt-2.5 pb-2 text-[0.8125rem] leading-tight tracking-[0.02em] transition-colors duration-200 focus-visible:rounded-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800 ${
+                  className={`group relative isolate flex w-full flex-col items-center justify-center gap-0.5 px-2.5 pt-2.5 pb-2 text-[0.8125rem] leading-tight tracking-[0.02em] max-[359.98px]:tracking-normal min-[360px]:px-3 transition-colors duration-200 focus-visible:rounded-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-800 ${
                     on ? "text-green-900" : "text-green-800/75"
                   }`}
                 >
